@@ -76,6 +76,28 @@ def test_tags_and_meta_included(mock_columns: list[dict[str, Any]]) -> None:
     assert source["meta"] == {"owner": "data-team"}
 
 
+def test_comments_propagated_to_description() -> None:
+    columns = [
+        {"name": "ID", "type": "NUMBER(38,0)", "nullable": False,
+         "primary_key": True, "comment": "Clé primaire"},
+    ]
+    col = _build(columns)["sources"][0]["tables"][0]["columns"][0]
+    assert col["description"] == "Clé primaire"
+
+
+def test_pii_column_gets_meta() -> None:
+    columns = [
+        {"name": "EMAIL", "type": "VARCHAR(256)", "nullable": True, "primary_key": False},
+    ]
+    col = _build(columns)["sources"][0]["tables"][0]["columns"][0]
+    assert col["meta"] == {"pii": True}
+
+
+def test_table_comment_as_description(mock_columns: list[dict[str, Any]]) -> None:
+    table = _build(mock_columns, table_comment="Table des commandes")["sources"][0]["tables"][0]
+    assert table["description"] == "Table des commandes"
+
+
 def test_yaml_is_valid(mock_columns: list[dict[str, Any]]) -> None:
     text = generate_sources_yml(
         source_name="raw",

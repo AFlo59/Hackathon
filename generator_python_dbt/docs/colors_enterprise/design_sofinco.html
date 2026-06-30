@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="clair">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Sofinco v2.1 — Référence visuelle</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   SOFINCO DESIGN SYSTEM v2.1
+   Référence unique — le SKILL.md en est dérivé
+   Typographie : Open Sans exclusivement
+   ═══════════════════════════════════════════════════ */
+
+/* ── TOKENS — CLAIR ── */
+:root, [data-theme="clair"] {
+  /* Cœur de marque — 4 couleurs, rôles exclusifs */
+  --marque-principale: #009597;      /* Couleur marque. KPI, titres chapitre, accents dominants */
+  --marque-ardoise: #666E8A;         /* Voix auteur. Titres So What?, supertitres, légendes */
+  --marque-marine: #071621;          /* Corps de texte par défaut. Omniprésent, discret */
+  --marque-sarcelle-fonce: #006466;  /* Tags UPPERCASE et labels uniquement. Usage ponctuel */
+
+  /* Neutres */
+  --blanc: #FFFFFF;
+  --blanc-casse: #F7F8FA;
+  --blanc-casse-2: #F5F5F5;
+  --gris-clair: #E8E8E8;
+  --gris-neutre: #C0C4CC;
+
+  /* Fonds pastels — conteneurs neutres, jamais sémantiques */
+  --pastel-sarcelle-tres-clair: #F0F9F9;
+  --pastel-sarcelle-clair: #EBF7F7;
+  --pastel-sarcelle-profond: #E0F5F5;
+  --pastel-sarcelle-gris: #D2DCDE;
+  --pastel-vert: #E5F2D0;
+  --pastel-vert-alt: #DAF2D0;
+  --pastel-violet: #E2D6EC;
+  --pastel-violet-alt: #ECDFF5;
+  --pastel-orange: #FDE8D0;
+  --pastel-orange-alt: #FBE2D5;
+  --pastel-rose: #F6E7E6;
+  --pastel-bleu: #D8EAF7;
+
+  /* Accents sémantiques — rôle unique dans tout le deck */
+  --vert: #2D8E57;             /* Positif, validé, succès */
+  --vert-fonce: #196B24;       /* Variante texte sur fond pastel vert */
+  --bleu: #3A7CC3;             /* Information, données externes, technique */
+  --bleu-fonce: #156082;       /* Variante texte sur fond pastel bleu */
+  --violet: #7030A0;           /* Stratégique, transverse, conceptuel */
+  --orange: #E07A2F;           /* Attention, vigilance, friction, risque modéré */
+  --corail: #F47682;           /* Alerte forte, critique, bloqueur, risque élevé */
+  --jaune: #FFC000;            /* Mise en avant ponctuelle, "à retenir" */
+
+  /* Typographie — Open Sans exclusivement */
+  --police: 'Open Sans', sans-serif;
+
+  /* Échelle d'espacement — base 4 */
+  --espace-4xs: 4px;
+  --espace-3xs: 8px;
+  --espace-2xs: 12px;
+  --espace-xs: 16px;
+  --espace-s: 24px;
+  --espace-m: 32px;
+  --espace-l: 48px;
+  --espace-xl: 64px;
+
+  /* Rayons */
+  --rayon-tag: 3px;
+  --rayon-bouton: 6px;
+  --rayon-carte: 8px;
+  --rayon-section: 12px;
+  --rayon-capsule: 20px;
+  --rayon-avatar: 50%;
+
+  /* Ombres */
+  --ombre-carte: 0 2px 12px rgba(0,0,0,0.04);
+  --ombre-carte-survol: 0 4px 18px rgba(0,149,151,0.12);
+  --ombre-modale: 0 8px 32px rgba(0,0,0,0.18);
+
+  /* Transitions */
+  --transition: 0.2s ease;
+
+  /* Surfaces du document */
+  --surface-fond: var(--blanc-casse);
+  --surface-carte: var(--blanc);
+  --surface-code: var(--marque-marine);
+  --texte-principal: var(--marque-marine);
+  --texte-secondaire: var(--marque-ardoise);
+  --bordure: var(--gris-clair);
+}
+
+/* ── TOKENS — SOMBRE ── */
+[data-theme="sombre"] {
+  --surface-fond: #0D1B2A;
+  --surface-carte: #142637;
+  --surface-code: #0A1520;
+  --texte-principal: #E0E4E8;
+  --texte-secondaire: #99A3B8;
+  --bordure: #1E3348;
+  --blanc: #142637;
+  --blanc-casse: #0F2033;
+  --blanc-casse-2: #12242F;
+  --gris-clair: #1E3348;
+  --gris-neutre: #3A4A5C;
+
+  --pastel-sarcelle-tres-clair: #0C2E30;
+  --pastel-sarcelle-clair: #0E3537;
+  --pastel-sarcelle-profond: #103D3F;
+  --pastel-sarcelle-gris: #1A3038;
+  --pastel-vert: #1A3020;
+  --pastel-vert-alt: #1D3524;
+  --pastel-violet: #241A30;
+  --pastel-violet-alt: #2A1F38;
+  --pastel-orange: #2E2218;
+  --pastel-orange-alt: #32251A;
+  --pastel-rose: #2E1C1C;
+  --pastel-bleu: #14243A;
+
+  --ombre-carte: 0 2px 12px rgba(0,0,0,0.3);
+  --ombre-carte-survol: 0 4px 18px rgba(0,149,151,0.2);
+  --ombre-modale: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+/* ── RESET ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--surface-fond);
+  color: var(--texte-principal);
+  font-family: var(--police);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.65;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ── LAYOUT ── */
+.ds-enveloppe { max-width: 1200px; margin: 0 auto; padding: 0 var(--espace-m) var(--espace-xl); }
+
+/* ── ENTÊTE ── */
+.ds-entete {
+  background: var(--surface-carte);
+  border-bottom: 3px solid var(--marque-principale);
+  padding: var(--espace-l) var(--espace-l) var(--espace-m);
+  margin-bottom: var(--espace-l);
+  box-shadow: var(--ombre-carte);
+  display: flex; justify-content: space-between; align-items: flex-start;
+  transition: background var(--transition);
+}
+.ds-entete-gauche { flex: 1; }
+.ds-entete .surtitre {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--marque-sarcelle-fonce); margin-bottom: var(--espace-3xs);
+}
+.ds-entete h1 { font-size: 32px; font-weight: 700; color: var(--texte-secondaire); }
+.ds-entete h1 span { color: var(--marque-principale); }
+.ds-entete .desc {
+  font-size: 13px; color: var(--texte-secondaire);
+  margin-top: 10px; line-height: 1.6; max-width: 700px;
+}
+.ds-entete .version-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  padding: 3px 11px; border-radius: var(--rayon-capsule);
+  background: var(--pastel-sarcelle-clair); color: var(--marque-sarcelle-fonce);
+  border: 1px solid rgba(0,149,151,0.25); display: inline-block; margin-top: var(--espace-3xs);
+}
+
+/* ── BOUTON THÈME ── */
+.btn-theme {
+  background: var(--surface-carte); border: 2px solid var(--bordure);
+  border-radius: var(--rayon-bouton); padding: 8px 14px;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  font-family: var(--police); font-size: 11px; font-weight: 600;
+  color: var(--texte-secondaire); transition: all var(--transition);
+  flex-shrink: 0;
+}
+.btn-theme:hover { border-color: var(--marque-principale); color: var(--marque-principale); }
+.btn-theme:focus-visible { outline: 2px solid var(--marque-principale); outline-offset: 2px; }
+.btn-theme svg { width: 16px; height: 16px; }
+[data-theme="clair"] .icone-soleil { display: none; }
+[data-theme="sombre"] .icone-lune { display: none; }
+
+/* ── SECTION ── */
+.ds-section { margin-bottom: var(--espace-l); }
+.ds-section-titre { display: flex; align-items: center; gap: 14px; margin-bottom: var(--espace-s); }
+.ds-section-titre .lt {
+  font-size: 14px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--marque-principale); white-space: nowrap;
+}
+.ds-section-titre::after { content: ''; flex: 1; height: 1px; background: var(--bordure); }
+
+/* ── NUANCIER ── */
+.nuancier-groupe-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--texte-secondaire); margin: 20px 0 10px;
+}
+.nuancier-groupe-label:first-child { margin-top: 0; }
+.nuancier-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.nuancier {
+  border-radius: var(--rayon-carte); overflow: hidden;
+  border: 1px solid var(--bordure); background: var(--surface-carte);
+  transition: box-shadow var(--transition);
+}
+.nuancier:hover { box-shadow: var(--ombre-carte-survol); }
+.nuancier-couleur { height: 52px; position: relative; }
+.nuancier-info { padding: 8px 10px; }
+.nuancier-nom { font-size: 10px; font-weight: 700; color: var(--texte-principal); }
+.nuancier-hex { font-size: 10px; color: var(--texte-secondaire); font-variant-numeric: tabular-nums; }
+.nuancier-role {
+  font-size: 9px; color: var(--texte-secondaire); margin-top: 2px;
+  line-height: 1.4; font-style: italic;
+}
+
+/* ── TYPOGRAPHIE ── */
+.type-rangee {
+  display: flex; align-items: baseline; gap: var(--espace-s);
+  padding: 14px 0; border-bottom: 1px solid var(--bordure);
+}
+.type-rangee:last-child { border-bottom: none; }
+.type-meta {
+  width: 200px; flex-shrink: 0;
+  font-size: 10px; color: var(--texte-secondaire); line-height: 1.6;
+}
+
+/* ── ESPACEMENT ── */
+.espacement-grille { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
+.espacement-item { text-align: center; }
+.espacement-boite {
+  background: var(--pastel-sarcelle-clair); border: 1px solid var(--marque-principale);
+  border-radius: var(--rayon-tag); margin-bottom: 6px;
+}
+.espacement-label { font-size: 11px; color: var(--texte-principal); font-weight: 700; }
+.espacement-nom { font-size: 9px; color: var(--texte-secondaire); }
+
+/* ── RAYONS ── */
+.rayon-grille { display: flex; flex-wrap: wrap; gap: var(--espace-xs); align-items: center; margin-top: 28px; }
+.rayon-boite {
+  width: 56px; height: 56px;
+  background: var(--pastel-sarcelle-clair); border: 2px solid var(--marque-principale);
+  margin: 0 auto 6px;
+}
+
+/* ── COMPOSANTS COMMUNS ── */
+.comp-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--texte-secondaire); margin-bottom: var(--espace-2xs);
+}
+.comp-rangee { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: var(--espace-m); align-items: flex-start; }
+
+/* ── BOUTONS ── */
+.btn {
+  font-family: var(--police); font-size: 12px; font-weight: 600;
+  padding: 10px 20px; cursor: pointer; border-radius: var(--rayon-bouton);
+  border: none; transition: all var(--transition); display: inline-flex;
+  align-items: center; gap: 6px; position: relative;
+}
+.btn:focus-visible { outline: 2px solid var(--marque-principale); outline-offset: 2px; }
+.btn:active { transform: scale(0.97); }
+
+.btn-primaire { background: var(--marque-principale); color: #FFFFFF; }
+.btn-primaire:hover { background: var(--marque-sarcelle-fonce); }
+
+.btn-contour { background: none; border: 2px solid var(--marque-principale); color: var(--marque-principale); }
+.btn-contour:hover { background: var(--pastel-sarcelle-clair); }
+
+.btn-fantome { background: none; border: none; color: var(--marque-principale); }
+.btn-fantome:hover { background: var(--pastel-sarcelle-clair); }
+
+.btn-danger { background: var(--corail); color: #FFFFFF; }
+.btn-danger:hover { background: #E0636F; }
+
+.btn:disabled, .btn[aria-disabled="true"] {
+  opacity: 0.45; cursor: not-allowed; pointer-events: none;
+}
+
+.btn-chargement { position: relative; color: transparent !important; pointer-events: none; }
+.btn-chargement::after {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: #FFFFFF;
+  border-radius: 50%; animation: rotation 0.6s linear infinite;
+  top: 50%; left: 50%; margin: -8px 0 0 -8px;
+}
+@keyframes rotation { to { transform: rotate(360deg); } }
+
+/* ── TAGS / PUCES / CAPSULES ── */
+.tag {
+  display: inline-block; font-size: 9px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: var(--rayon-tag); margin-right: 6px;
+}
+.puce {
+  display: inline-block; font-size: 9.5px; font-weight: 600;
+  padding: 3px 9px; border-radius: var(--rayon-tag);
+  background: var(--blanc-casse-2); color: var(--texte-secondaire);
+  border: 1px solid var(--bordure); margin-right: 6px;
+}
+.capsule {
+  display: inline-flex; align-items: center; font-size: 10px;
+  font-weight: 700; letter-spacing: 0.5px;
+  padding: 3px 11px; border-radius: var(--rayon-capsule); margin-right: 6px;
+}
+
+/* ── CARTES ── */
+.carte {
+  background: var(--surface-carte); border: 1px solid var(--bordure);
+  border-radius: var(--rayon-carte); padding: 20px 22px;
+  transition: box-shadow var(--transition), border-color var(--transition);
+  width: 240px;
+}
+.carte:hover { box-shadow: var(--ombre-carte-survol); border-color: var(--marque-principale); }
+.carte:focus-within { outline: 2px solid var(--marque-principale); outline-offset: 2px; }
+.carte h3 { font-size: 14px; font-weight: 700; color: var(--texte-principal); margin-bottom: 5px; }
+.carte p { font-size: 12px; color: var(--texte-secondaire); line-height: 1.6; }
+
+/* ── TABLEAU ── */
+.tableau-enveloppe {
+  background: var(--surface-carte); border: 1px solid var(--bordure);
+  border-radius: var(--rayon-carte); overflow: hidden;
+}
+.tableau {
+  width: 100%; border-collapse: collapse; font-size: 12px;
+}
+.tableau thead th {
+  background: var(--marque-principale); color: #FFFFFF;
+  font-weight: 700; text-align: left; padding: 10px 16px;
+  font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.tableau td {
+  padding: 10px 16px; border-bottom: 1px solid var(--bordure); color: var(--texte-principal);
+}
+.tableau tr:nth-child(even) td { background: var(--blanc-casse-2); }
+
+/* ── ALERTES (SVG) ── */
+.alerte {
+  padding: 14px 18px; border-radius: 4px; font-size: 13px;
+  line-height: 1.6; display: flex; gap: 10px; margin-bottom: 10px; max-width: 640px;
+}
+.alerte .icone { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; }
+.alerte.info { background: var(--pastel-sarcelle-clair); border-left: 3px solid var(--marque-principale); }
+.alerte.attention { background: var(--pastel-orange); border-left: 3px solid var(--orange); }
+.alerte.erreur { background: var(--pastel-rose); border-left: 3px solid var(--corail); }
+.alerte.succes { background: var(--pastel-vert); border-left: 3px solid var(--vert); }
+
+/* ── KPI ── */
+.kpi {
+  padding: 18px; border-radius: var(--rayon-bouton);
+  background: var(--blanc-casse-2); text-align: center;
+  min-width: 120px; border: 1px solid var(--bordure);
+}
+.kpi .valeur {
+  font-size: 30px; font-weight: 700;
+  color: var(--marque-principale); line-height: 1.1;
+}
+.kpi .libelle {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--marque-sarcelle-fonce); margin-top: 6px;
+}
+
+/* ── CHAMPS DE SAISIE ── */
+.champ-groupe { display: flex; flex-direction: column; gap: 4px; min-width: 200px; }
+.champ-label {
+  font-size: 11px; font-weight: 700; color: var(--texte-secondaire);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.champ {
+  font-family: var(--police); font-size: 13px; padding: 10px 14px;
+  border: 1px solid var(--bordure); border-radius: var(--rayon-bouton);
+  background: var(--surface-carte); color: var(--texte-principal);
+  transition: all var(--transition); outline: none;
+}
+.champ:hover { border-color: var(--gris-neutre); }
+.champ:focus { border-color: var(--marque-principale); box-shadow: 0 0 0 3px rgba(0,149,151,0.15); }
+.champ:disabled { opacity: 0.45; cursor: not-allowed; background: var(--blanc-casse-2); }
+.champ.erreur-champ { border-color: var(--corail); }
+.champ.erreur-champ:focus { box-shadow: 0 0 0 3px rgba(244,118,130,0.15); }
+.champ-aide { font-size: 10px; color: var(--texte-secondaire); }
+.champ-erreur-msg { font-size: 10px; color: var(--corail); font-weight: 600; }
+
+textarea.champ { resize: vertical; min-height: 80px; }
+
+select.champ {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666E8A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px;
+}
+
+/* ── ONGLETS ── */
+.onglets { display: flex; border-bottom: 2px solid var(--bordure); margin-bottom: var(--espace-s); }
+.onglet {
+  font-family: var(--police); font-size: 12px; font-weight: 600;
+  padding: 10px 20px; border: none; background: none;
+  color: var(--texte-secondaire); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: all var(--transition);
+}
+.onglet:hover { color: var(--marque-principale); }
+.onglet:focus-visible { outline: 2px solid var(--marque-principale); outline-offset: -2px; }
+.onglet.actif { color: var(--marque-principale); border-bottom-color: var(--marque-principale); }
+
+/* ── FIL D'ARIANE ── */
+.fil-ariane {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--texte-secondaire); margin-bottom: var(--espace-s);
+}
+.fil-ariane a {
+  color: var(--marque-principale); text-decoration: none; font-weight: 600;
+  transition: color var(--transition);
+}
+.fil-ariane a:hover { color: var(--marque-sarcelle-fonce); text-decoration: underline; }
+.fil-ariane a:focus-visible { outline: 2px solid var(--marque-principale); outline-offset: 2px; border-radius: 2px; }
+.fil-ariane .separateur { color: var(--gris-neutre); }
+
+/* ── INFOBULLE ── */
+.infobulle-conteneur { position: relative; display: inline-block; }
+.infobulle {
+  visibility: hidden; opacity: 0;
+  position: absolute; bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%); padding: 6px 12px;
+  background: var(--marque-marine); color: #E0E4E8;
+  font-size: 11px; border-radius: var(--rayon-bouton);
+  white-space: nowrap; pointer-events: none;
+  transition: opacity var(--transition), visibility var(--transition);
+  z-index: 10;
+}
+.infobulle::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  margin-left: -5px; border: 5px solid transparent;
+  border-top-color: var(--marque-marine);
+}
+.infobulle-conteneur:hover .infobulle,
+.infobulle-conteneur:focus-within .infobulle { visibility: visible; opacity: 1; }
+
+/* ── MODALE ── */
+.modale-fond {
+  position: fixed; inset: 0; background: rgba(7,22,33,0.5);
+  display: none; align-items: center; justify-content: center; z-index: 100;
+  backdrop-filter: blur(4px);
+}
+.modale-fond.visible { display: flex; }
+.modale {
+  background: var(--surface-carte); border-radius: var(--rayon-section);
+  padding: var(--espace-m); max-width: 480px; width: 90%;
+  box-shadow: var(--ombre-modale); position: relative;
+}
+.modale h3 { font-size: 18px; font-weight: 700; color: var(--texte-principal); margin-bottom: var(--espace-3xs); }
+.modale p { font-size: 13px; color: var(--texte-secondaire); line-height: 1.6; margin-bottom: var(--espace-s); }
+.modale-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.modale-fermer {
+  position: absolute; top: 16px; right: 16px; background: none;
+  border: none; cursor: pointer; color: var(--texte-secondaire);
+  padding: 4px; border-radius: var(--rayon-tag);
+  transition: color var(--transition);
+}
+.modale-fermer:hover { color: var(--texte-principal); }
+.modale-fermer:focus-visible { outline: 2px solid var(--marque-principale); }
+
+/* ── INTERRUPTEUR (TOGGLE) ── */
+.interrupteur-conteneur { display: flex; align-items: center; gap: 10px; }
+.interrupteur {
+  width: 40px; height: 22px; border-radius: 11px;
+  background: var(--gris-neutre); border: none; cursor: pointer;
+  position: relative; transition: background var(--transition);
+  padding: 0;
+}
+.interrupteur::after {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  border-radius: 50%; background: #FFFFFF; top: 3px; left: 3px;
+  transition: transform var(--transition);
+}
+.interrupteur.actif { background: var(--marque-principale); }
+.interrupteur.actif::after { transform: translateX(18px); }
+.interrupteur:focus-visible { outline: 2px solid var(--marque-principale); outline-offset: 2px; }
+.interrupteur-label { font-size: 12px; color: var(--texte-secondaire); }
+
+/* ── BARRE DE PROGRESSION ── */
+.barre-progression {
+  width: 100%; height: 8px; background: var(--gris-clair);
+  border-radius: 4px; overflow: hidden;
+}
+.barre-progression-remplissage {
+  height: 100%; background: var(--marque-principale);
+  border-radius: 4px; transition: width 0.5s ease;
+}
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; border-radius: 10px;
+  font-size: 10px; font-weight: 700; padding: 0 6px; color: #FFFFFF;
+}
+
+/* ── ÉTATS INTERACTIFS (SECTION DÉMO) ── */
+.etats-grille {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--espace-xs);
+}
+.etat-demo {
+  text-align: center; padding: var(--espace-xs);
+  background: var(--surface-carte); border: 1px solid var(--bordure);
+  border-radius: var(--rayon-carte);
+}
+.etat-demo .etat-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--texte-secondaire);
+  margin-top: var(--espace-3xs);
+}
+
+/* ── TOKENS BLOC CODE ── */
+.bloc-code {
+  background: var(--surface-code); color: #c0c4cc;
+  font-family: 'Open Sans', sans-serif; font-size: 12px;
+  padding: var(--espace-s) 28px; border-radius: var(--rayon-carte);
+  line-height: 1.9; overflow-x: auto; white-space: pre; tab-size: 2;
+  transition: background var(--transition);
+}
+.code-commentaire { color: var(--marque-ardoise); }
+.code-selecteur { color: var(--marque-principale); }
+.code-propriete { color: var(--corail); }
+.code-valeur { color: var(--jaune); }
+
+/* ── BOUTONS EXPORT ── */
+.export-rangee { display: flex; gap: 10px; margin-top: var(--espace-xs); flex-wrap: wrap; }
+
+/* ── PIED DE PAGE ── */
+.ds-pied {
+  text-align: center; padding: 20px;
+  font-size: 10px; color: var(--gris-neutre);
+  border-top: 1px solid var(--bordure);
+}
+.ds-pied strong { color: var(--texte-secondaire); }
+
+/* ── CHANGELOG ── */
+.changelog-entree { padding: var(--espace-2xs) 0; border-bottom: 1px solid var(--bordure); }
+.changelog-entree:last-child { border-bottom: none; }
+.changelog-version {
+  font-size: 13px; font-weight: 700; color: var(--marque-principale);
+}
+.changelog-date { font-size: 11px; color: var(--texte-secondaire); margin-left: 8px; }
+.changelog-liste { font-size: 12px; color: var(--texte-principal); margin-top: 6px; padding-left: 20px; }
+.changelog-liste li { margin-bottom: 3px; }
+
+/* ── BARRE DE NAVIGATION PAR ZONE ── */
+.ds-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--surface-carte); border-bottom: 2px solid var(--bordure);
+  padding: 0 var(--espace-m);
+  display: flex; align-items: center; gap: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: background var(--transition);
+}
+.ds-nav-btn {
+  font-family: var(--police); font-size: 12px; font-weight: 600;
+  padding: 14px 20px; border: none; background: none;
+  color: var(--texte-secondaire); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: all var(--transition); white-space: nowrap;
+}
+.ds-nav-btn:hover { color: var(--marque-principale); }
+.ds-nav-btn:focus-visible { outline: 2px solid var(--marque-principale); outline-offset: -2px; }
+.ds-nav-btn.actif { color: var(--marque-principale); border-bottom-color: var(--marque-principale); }
+.ds-nav-compteur {
+  font-size: 9px; font-weight: 700; background: var(--pastel-sarcelle-clair);
+  color: var(--marque-sarcelle-fonce); padding: 1px 6px; border-radius: 10px;
+  margin-left: 6px;
+}
+.ds-section[data-zone] { transition: opacity 0.15s ease; }
+.ds-section.masque { display: none; }
+
+/* ── SOMMAIRE LATÉRAL ── */
+.ds-corps { display: flex; align-items: flex-start; gap: var(--espace-l); max-width: 1320px; margin: 0 auto; }
+.ds-corps > .ds-enveloppe { margin: 0; max-width: none; flex: 1; min-width: 0; padding-left: 0; padding-right: var(--espace-m); }
+.ds-cote {
+  position: sticky; top: 64px; align-self: flex-start; flex-shrink: 0;
+  width: 226px; max-height: calc(100vh - 80px); overflow-y: auto;
+  padding: var(--espace-m) var(--espace-xs) var(--espace-m) var(--espace-m);
+}
+.ds-cote-titre {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--marque-sarcelle-fonce); margin-bottom: var(--espace-xs); padding-left: 12px;
+}
+.ds-cote-lien {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 7px 12px; border-left: 2px solid transparent;
+  font-size: 12.5px; font-weight: 600; color: var(--texte-secondaire);
+  text-decoration: none; transition: all var(--transition); border-radius: 0 var(--rayon-bouton) var(--rayon-bouton) 0;
+}
+.ds-cote-lien:hover { color: var(--marque-principale); background: var(--pastel-sarcelle-clair); }
+.ds-cote-lien.actif { color: var(--marque-principale); border-left-color: var(--marque-principale); background: var(--pastel-sarcelle-clair); }
+.ds-cote-num { font-size: 10px; font-weight: 700; color: var(--marque-sarcelle-fonce); flex-shrink: 0; }
+.ds-section-titre[id] { scroll-margin-top: 64px; }
+@media (max-width: 900px) { .ds-cote { display: none; } .ds-corps { display: block; } .ds-corps > .ds-enveloppe { padding-right: 0; } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .ds-entete { padding: var(--espace-s) 20px; flex-direction: column; gap: var(--espace-xs); }
+  .ds-enveloppe { padding: 0 var(--espace-xs) 60px; }
+  .type-rangee { flex-direction: column; gap: 6px; }
+  .type-meta { width: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ENTÊTE                                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-entete">
+  <div class="ds-entete-gauche">
+    <h1 style="color:#009597;">Design System <span style="color:#009597;">Sofinco</span> — Output HTML</h1>
+  </div>
+  <button class="btn-theme" onclick="basculerTheme()" aria-label="Basculer le thème clair/sombre">
+    <svg class="icone-lune" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    <svg class="icone-soleil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    <span class="label-clair">Sombre</span>
+    <span class="label-sombre" style="display:none;">Clair</span>
+  </button>
+</div>
+
+<div class="ds-corps">
+
+<aside class="ds-cote" aria-label="Sommaire des sections">
+  <div class="ds-cote-titre">Sommaire</div>
+  <a href="#sec-01" class="ds-cote-lien"><span class="ds-cote-num">01</span> Palette de couleurs</a>
+  <a href="#sec-02" class="ds-cote-lien"><span class="ds-cote-num">02</span> Typographie</a>
+  <a href="#sec-03" class="ds-cote-lien"><span class="ds-cote-num">03</span> Espacements & rayons</a>
+  <a href="#sec-04" class="ds-cote-lien"><span class="ds-cote-num">04</span> Composants</a>
+  <a href="#sec-05" class="ds-cote-lien"><span class="ds-cote-num">05</span> États interactifs</a>
+  <a href="#sec-06" class="ds-cote-lien"><span class="ds-cote-num">06</span> Patterns de layout</a>
+  <a href="#sec-07" class="ds-cote-lien"><span class="ds-cote-num">07</span> Gouvernance couleur</a>
+  <a href="#sec-11" class="ds-cote-lien"><span class="ds-cote-num">11</span> Tokens — CSS</a>
+</aside>
+
+<div class="ds-enveloppe">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 01. PALETTE                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="identite">
+  <div class="ds-section-titre" id="sec-01"><span class="lt">01 · Palette de couleurs</span></div>
+
+  <div class="nuancier-groupe-label">Cœur de marque — rôles exclusifs</div>
+  <div class="nuancier-grille">
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#009597;"></div><div class="nuancier-info"><div class="nuancier-nom">Principale</div><div class="nuancier-hex">#009597</div><div class="nuancier-role">Couleur marque. KPI, titres chapitre, accents dominants.</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#666E8A;"></div><div class="nuancier-info"><div class="nuancier-nom">Ardoise</div><div class="nuancier-hex">#666E8A</div><div class="nuancier-role">Voix auteur. Titres So What?, supertitres, légendes.</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#071621;"></div><div class="nuancier-info"><div class="nuancier-nom">Marine</div><div class="nuancier-hex">#071621</div><div class="nuancier-role">Corps de texte par défaut. Omniprésent, discret.</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#006466;"></div><div class="nuancier-info"><div class="nuancier-nom">Sarcelle foncé</div><div class="nuancier-hex">#006466</div><div class="nuancier-role">Tags UPPERCASE et labels uniquement. Ponctuel.</div></div></div>
+  </div>
+
+  <div class="nuancier-groupe-label">Neutres</div>
+  <div class="nuancier-grille">
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#FFFFFF; border-bottom:1px solid #E8E8E8;"></div><div class="nuancier-info"><div class="nuancier-nom">Blanc</div><div class="nuancier-hex">#FFFFFF</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#F7F8FA;"></div><div class="nuancier-info"><div class="nuancier-nom">Blanc cassé</div><div class="nuancier-hex">#F7F8FA</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#F5F5F5;"></div><div class="nuancier-info"><div class="nuancier-nom">Blanc cassé 2</div><div class="nuancier-hex">#F5F5F5</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#E8E8E8;"></div><div class="nuancier-info"><div class="nuancier-nom">Gris clair</div><div class="nuancier-hex">#E8E8E8</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#C0C4CC;"></div><div class="nuancier-info"><div class="nuancier-nom">Gris neutre</div><div class="nuancier-hex">#C0C4CC</div></div></div>
+  </div>
+
+  <div class="nuancier-groupe-label">Fonds pastels — conteneurs neutres (jamais sémantiques)</div>
+  <div class="nuancier-grille">
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#F0F9F9;"></div><div class="nuancier-info"><div class="nuancier-nom">Sarcelle très clair</div><div class="nuancier-hex">#F0F9F9</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#EBF7F7;"></div><div class="nuancier-info"><div class="nuancier-nom">Sarcelle clair</div><div class="nuancier-hex">#EBF7F7</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#E0F5F5;"></div><div class="nuancier-info"><div class="nuancier-nom">Sarcelle profond</div><div class="nuancier-hex">#E0F5F5</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#D2DCDE;"></div><div class="nuancier-info"><div class="nuancier-nom">Sarcelle gris</div><div class="nuancier-hex">#D2DCDE</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#E5F2D0;"></div><div class="nuancier-info"><div class="nuancier-nom">Vert</div><div class="nuancier-hex">#E5F2D0</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#DAF2D0;"></div><div class="nuancier-info"><div class="nuancier-nom">Vert alt</div><div class="nuancier-hex">#DAF2D0</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#E2D6EC;"></div><div class="nuancier-info"><div class="nuancier-nom">Violet</div><div class="nuancier-hex">#E2D6EC</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#ECDFF5;"></div><div class="nuancier-info"><div class="nuancier-nom">Violet alt</div><div class="nuancier-hex">#ECDFF5</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#FDE8D0;"></div><div class="nuancier-info"><div class="nuancier-nom">Orange</div><div class="nuancier-hex">#FDE8D0</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#FBE2D5;"></div><div class="nuancier-info"><div class="nuancier-nom">Orange alt</div><div class="nuancier-hex">#FBE2D5</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#F6E7E6;"></div><div class="nuancier-info"><div class="nuancier-nom">Rose</div><div class="nuancier-hex">#F6E7E6</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#D8EAF7;"></div><div class="nuancier-info"><div class="nuancier-nom">Bleu</div><div class="nuancier-hex">#D8EAF7</div></div></div>
+  </div>
+
+  <div class="nuancier-groupe-label">Accents sémantiques — un rôle unique par couleur</div>
+  <div class="nuancier-grille">
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#2D8E57;"></div><div class="nuancier-info"><div class="nuancier-nom">Vert</div><div class="nuancier-hex">#2D8E57</div><div class="nuancier-role">Positif, validé, succès, ROI favorable</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#196B24;"></div><div class="nuancier-info"><div class="nuancier-nom">Vert foncé</div><div class="nuancier-hex">#196B24</div><div class="nuancier-role">Texte sur fond pastel vert</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#3A7CC3;"></div><div class="nuancier-info"><div class="nuancier-nom">Bleu</div><div class="nuancier-hex">#3A7CC3</div><div class="nuancier-role">Information, données externes, technique</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#156082;"></div><div class="nuancier-info"><div class="nuancier-nom">Bleu foncé</div><div class="nuancier-hex">#156082</div><div class="nuancier-role">Texte sur fond pastel bleu</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#7030A0;"></div><div class="nuancier-info"><div class="nuancier-nom">Violet</div><div class="nuancier-hex">#7030A0</div><div class="nuancier-role">Stratégique, transverse, conceptuel</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#E07A2F;"></div><div class="nuancier-info"><div class="nuancier-nom">Orange</div><div class="nuancier-hex">#E07A2F</div><div class="nuancier-role">Attention, vigilance, risque modéré</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#F47682;"></div><div class="nuancier-info"><div class="nuancier-nom">Corail</div><div class="nuancier-hex">#F47682</div><div class="nuancier-role">Alerte forte, critique, bloqueur</div></div></div>
+    <div class="nuancier"><div class="nuancier-couleur" style="background:#FFC000;"></div><div class="nuancier-info"><div class="nuancier-nom">Jaune</div><div class="nuancier-hex">#FFC000</div><div class="nuancier-role">Mise en avant ponctuelle, "à retenir"</div></div></div>
+  </div>
+
+  <div class="nuancier-groupe-label" style="color:var(--corail); margin-top:24px;">Couleurs interdites</div>
+  <div style="font-size:12px; color:var(--texte-secondaire); line-height:1.7; margin-bottom:8px;">
+    Jamais de <code style="color:var(--corail);">#000000</code> (utiliser #071621),
+    <code style="color:var(--corail);">#FF0000</code> (utiliser corail),
+    <code style="color:var(--corail);">#0000FF</code> (utiliser bleu).
+    Retirées : <code style="color:var(--corail);">#003C3D</code>, <code style="color:var(--corail);">#1AAEB7</code>, <code style="color:var(--corail);">#7B5EA7</code>, <code style="color:var(--corail);">#A02B93</code>, <code style="color:var(--corail);">#D4763A</code>, <code style="color:var(--corail);">#E97132</code>.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 02. TYPOGRAPHIE                              -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="identite">
+  <div class="ds-section-titre" id="sec-02"><span class="lt">02 · Typographie — Open Sans exclusivement</span></div>
+
+  <div class="type-rangee">
+    <div class="type-meta">Titre couverture<br>28pt · 700 · #666E8A</div>
+    <div style="flex:1;"><span style="font-size:28px; font-weight:700; color:var(--marque-ardoise);">Titre de la présentation</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Date couverture<br>20pt · 700 · #009597</div>
+    <div style="flex:1;"><span style="font-size:20px; font-weight:700; color:var(--marque-principale);">Mai 2026</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Titre chapitre<br>36pt · 400 · #009597</div>
+    <div style="flex:1;"><span style="font-size:32px; font-weight:400; color:var(--marque-principale);">Section stratégique</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Titre contenu (So What?)<br>28pt · 700 · #666E8A</div>
+    <div style="flex:1;"><span style="font-size:24px; font-weight:700; color:var(--marque-ardoise);">La pénétration chatbot reste sous 2% malgré le trafic</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Surtitre<br>18pt · 400 · #666E8A</div>
+    <div style="flex:1;"><span style="font-size:18px; font-weight:400; color:var(--marque-ardoise);">Stratégie Data Sofinco</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Sous-section<br>16pt · 700 · #071621 ou #009597</div>
+    <div style="flex:1;"><span style="font-size:16px; font-weight:700; color:var(--marque-principale);">Sous-titre de bloc</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Tag section<br>12-14pt · 700 · UPPERCASE<br>#006466 ou sémantique</div>
+    <div style="flex:1;"><span style="font-size:12px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--marque-sarcelle-fonce);">DMO France · Vision cible</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Corps de texte<br>11-14pt · 400 · lh 1.65<br>#071621 / #666E8A</div>
+    <div style="flex:1;"><span style="font-size:14px; color:var(--texte-principal); line-height:1.65;">Texte courant en Open Sans. Les <span style="color:var(--marque-principale); font-weight:700;">notions clés</span> sont en principale bold, le <span style="color:var(--texte-secondaire);">secondaire en ardoise</span>.</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Petite taille<br>11-12pt · 400 · #666E8A</div>
+    <div style="flex:1;"><span style="font-size:12px; color:var(--texte-secondaire);">Texte de tableau, descriptions de cartes, métadonnées.</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">KPI grand format<br>36-40pt · 700 · #009597</div>
+    <div style="flex:1;"><span style="font-size:36px; font-weight:700; color:var(--marque-principale);">2 522</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Libellé KPI<br>10-12pt · 700 · #006466</div>
+    <div style="flex:1;"><span style="font-size:11px; font-weight:700; color:var(--marque-sarcelle-fonce); text-transform:uppercase; letter-spacing:0.5px;">Conversations</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Numéro de slide<br>12pt · 400 · #071621</div>
+    <div style="flex:1;"><span style="font-size:12px; font-weight:400; color:var(--texte-principal);">3</span></div>
+  </div>
+  <div class="type-rangee">
+    <div class="type-meta">Notes / légendes<br>9pt · 400 · #666E8A</div>
+    <div style="flex:1;"><span style="font-size:9px; color:var(--texte-secondaire);">Source : données internes, période T1 2026.</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 03. ESPACEMENTS                              -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="identite">
+  <div class="ds-section-titre" id="sec-03"><span class="lt">03 · Espacements et rayons — base 4</span></div>
+
+  <div class="comp-label">Échelle (multiplicateurs de 4)</div>
+  <div class="espacement-grille">
+    <div class="espacement-item"><div class="espacement-boite" style="width:4px; height:4px;"></div><div class="espacement-label">4</div><div class="espacement-nom">4xs</div></div>
+    <div class="espacement-item"><div class="espacement-boite" style="width:8px; height:8px;"></div><div class="espacement-label">8</div><div class="espacement-nom">3xs</div></div>
+    <div class="espacement-item"><div class="espacement-boite" style="width:12px; height:12px;"></div><div class="espacement-label">12</div><div class="espacement-nom">2xs</div></div>
+    <div class="espacement-item"><div class="espacement-boite" style="width:16px; height:16px;"></div><div class="espacement-label">16</div><div class="espacement-nom">xs</div></div>
+    <div class="espacement-item"><div class="espacement-boite" style="width:24px; height:24px;"></div><div class="espacement-label">24</div><div class="espacement-nom">s</div></div>
+    <div class="espacement-item"><div class="espacement-boite" style="width:32px; height:32px;"></div><div class="espacement-label">32</div><div class="espacement-nom">m</div></div>
+    <div class="espacement-item"><div class="espacement-boite" style="width:48px; height:48px;"></div><div class="espacement-label">48</div><div class="espacement-nom">l</div></div>
+    <div class="espacement-item"><div class="espacement-boite" style="width:64px; height:64px;"></div><div class="espacement-label">64</div><div class="espacement-nom">xl</div></div>
+  </div>
+
+  <div style="margin-top:24px; font-size:12px; color:var(--texte-secondaire); line-height:1.7;">
+    Progression : ×1, ×2, ×3, ×4, ×6, ×8, ×12, ×16 de la base 4px. Chaque palier est un multiple exact de 4.
+  </div>
+
+  <div style="margin-top:var(--espace-s);">
+    <div class="tableau-enveloppe" style="max-width:520px;">
+      <table class="tableau">
+        <thead><tr><th>Contexte</th><th>Valeur</th></tr></thead>
+        <tbody>
+          <tr><td>Section page</td><td>48px (l)</td></tr>
+          <tr><td>Carte interne</td><td>24px (s)</td></tr>
+          <tr><td>Gouttière grille</td><td>16px (xs)</td></tr>
+          <tr><td>Séparation sections</td><td>48px (l)</td></tr>
+          <tr><td>Cellule tableau</td><td>12px (2xs) / 16px (xs)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="comp-label" style="margin-top:var(--espace-s);">Rayons de bordure</div>
+  <div class="rayon-grille">
+    <div style="text-align:center;"><div class="rayon-boite" style="border-radius:3px;"></div><div class="espacement-label">3px</div><div class="espacement-nom">tag</div></div>
+    <div style="text-align:center;"><div class="rayon-boite" style="border-radius:6px;"></div><div class="espacement-label">6px</div><div class="espacement-nom">bouton</div></div>
+    <div style="text-align:center;"><div class="rayon-boite" style="border-radius:8px;"></div><div class="espacement-label">8px</div><div class="espacement-nom">carte</div></div>
+    <div style="text-align:center;"><div class="rayon-boite" style="border-radius:12px;"></div><div class="espacement-label">12px</div><div class="espacement-nom">section</div></div>
+    <div style="text-align:center;"><div class="rayon-boite" style="border-radius:20px;"></div><div class="espacement-label">20px</div><div class="espacement-nom">capsule</div></div>
+    <div style="text-align:center;"><div class="rayon-boite" style="border-radius:50%;"></div><div class="espacement-label">50%</div><div class="espacement-nom">avatar</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 04. COMPOSANTS                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="web">
+  <div class="ds-section-titre" id="sec-04"><span class="lt">04 · Composants</span></div>
+
+  <!-- BOUTONS -->
+  <div class="comp-label">Boutons</div>
+  <div class="comp-rangee">
+    <button class="btn btn-primaire">Primaire</button>
+    <button class="btn btn-contour">Contour</button>
+    <button class="btn btn-fantome">Fantôme</button>
+    <button class="btn btn-danger">Danger</button>
+  </div>
+  <div class="comp-label">Boutons — états</div>
+  <div class="comp-rangee">
+    <button class="btn btn-primaire" disabled>Désactivé</button>
+    <button class="btn btn-primaire btn-chargement">Chargement</button>
+    <div class="infobulle-conteneur">
+      <button class="btn btn-contour">Avec infobulle</button>
+      <div class="infobulle">Action secondaire disponible</div>
+    </div>
+  </div>
+
+  <!-- TAGS -->
+  <div class="comp-label">Tags · Puces · Capsules</div>
+  <div style="margin-bottom:var(--espace-m);">
+    <div style="margin-bottom:10px;">
+      <span class="tag" style="background:var(--pastel-violet); color:var(--violet);">Produit Data</span>
+      <span class="tag" style="background:var(--pastel-orange); color:var(--orange);">Source</span>
+      <span class="tag" style="background:var(--pastel-vert); color:var(--vert-fonce);">Validé</span>
+      <span class="tag" style="background:var(--pastel-rose); color:var(--corail);">Bloqueur</span>
+      <span class="tag" style="background:var(--pastel-bleu); color:var(--bleu-fonce);">Technique</span>
+    </div>
+    <div style="margin-bottom:10px;">
+      <span class="puce">Reporting</span>
+      <span class="puce">Callsight</span>
+      <span class="puce">Snowflake</span>
+    </div>
+    <div>
+      <span class="capsule" style="color:var(--bleu-fonce); background:var(--pastel-bleu); border:1px solid rgba(58,124,195,0.25);">v2.0.0 — 19/05/2026</span>
+      <span class="capsule" style="background:var(--pastel-rose); color:var(--corail); border:1px solid rgba(244,118,130,0.3);">Travail en cours</span>
+      <span class="capsule" style="background:var(--pastel-vert); color:var(--vert-fonce); border:1px solid rgba(45,142,87,0.25);">Terminé</span>
+    </div>
+  </div>
+
+  <!-- CHAMPS DE SAISIE -->
+  <div class="comp-label">Champs de saisie</div>
+  <div class="comp-rangee" style="align-items:flex-end;">
+    <div class="champ-groupe">
+      <label class="champ-label">Texte standard</label>
+      <input type="text" class="champ" placeholder="Saisir une valeur...">
+      <span class="champ-aide">Texte d'aide contextuelle</span>
+    </div>
+    <div class="champ-groupe">
+      <label class="champ-label">En erreur</label>
+      <input type="text" class="champ erreur-champ" value="Valeur invalide">
+      <span class="champ-erreur-msg">Ce champ est obligatoire</span>
+    </div>
+    <div class="champ-groupe">
+      <label class="champ-label">Désactivé</label>
+      <input type="text" class="champ" disabled value="Non modifiable">
+    </div>
+    <div class="champ-groupe">
+      <label class="champ-label">Sélecteur</label>
+      <select class="champ">
+        <option>Option A</option>
+        <option>Option B</option>
+        <option>Option C</option>
+      </select>
+    </div>
+  </div>
+  <div class="comp-rangee">
+    <div class="champ-groupe" style="min-width:420px;">
+      <label class="champ-label">Zone de texte</label>
+      <textarea class="champ" placeholder="Description longue..."></textarea>
+    </div>
+  </div>
+
+  <!-- INTERRUPTEUR + BARRE PROGRESSION + BADGE -->
+  <div class="comp-label">Interrupteur · Progression · Badges</div>
+  <div class="comp-rangee" style="align-items:center;">
+    <div class="interrupteur-conteneur">
+      <button class="interrupteur actif" onclick="this.classList.toggle('actif')" aria-label="Activer/désactiver"></button>
+      <span class="interrupteur-label">Actif</span>
+    </div>
+    <div class="interrupteur-conteneur">
+      <button class="interrupteur" onclick="this.classList.toggle('actif')" aria-label="Activer/désactiver"></button>
+      <span class="interrupteur-label">Inactif</span>
+    </div>
+    <div style="width:200px;">
+      <div class="barre-progression"><div class="barre-progression-remplissage" style="width:68%;"></div></div>
+      <div style="font-size:10px; color:var(--texte-secondaire); margin-top:4px;">68% complété</div>
+    </div>
+    <span class="badge" style="background:var(--marque-principale);">3</span>
+    <span class="badge" style="background:var(--corail);">12</span>
+    <span class="badge" style="background:var(--vert);">OK</span>
+  </div>
+
+  <!-- ONGLETS -->
+  <div class="comp-label">Onglets</div>
+  <div class="onglets" style="max-width:500px;">
+    <button class="onglet actif" onclick="activerOnglet(this)">Vue d'ensemble</button>
+    <button class="onglet" onclick="activerOnglet(this)">Détail KPI</button>
+    <button class="onglet" onclick="activerOnglet(this)">Sources</button>
+    <button class="onglet" onclick="activerOnglet(this)">Historique</button>
+  </div>
+
+  <!-- FIL D'ARIANE -->
+  <div class="comp-label">Fil d'Ariane</div>
+  <div class="fil-ariane" style="margin-bottom:var(--espace-m);">
+    <a href="#">Accueil</a>
+    <span class="separateur">/</span>
+    <a href="#">Produits Data</a>
+    <span class="separateur">/</span>
+    <a href="#">Reporting</a>
+    <span class="separateur">/</span>
+    <span>Performance plateau</span>
+  </div>
+
+  <!-- CARTES -->
+  <div class="comp-label">Cartes</div>
+  <div class="comp-rangee">
+    <div class="carte">
+      <span class="tag" style="background:var(--pastel-violet); color:var(--violet); margin-bottom:8px; display:inline-block;">Produit Data</span>
+      <h3>Reporting opérationnel</h3>
+      <p>Suivi d'activité pour piloter la performance des équipes plateau.</p>
+    </div>
+    <div class="carte" style="border-left: 4px solid var(--orange);">
+      <span class="tag" style="background:var(--pastel-orange); color:var(--orange); margin-bottom:8px; display:inline-block;">Source</span>
+      <h3>Amazon Connect</h3>
+      <p>Interactions téléphoniques et écrites.</p>
+    </div>
+    <div class="kpi"><div class="valeur">43 %</div><div class="libelle">Taux de conversion</div></div>
+    <div class="kpi"><div class="valeur">2 522</div><div class="libelle">Conversations</div></div>
+  </div>
+
+  <!-- TABLEAU -->
+  <div class="comp-label">Tableau</div>
+  <div class="tableau-enveloppe" style="max-width:600px; margin-bottom:var(--espace-m);">
+    <table class="tableau">
+      <thead><tr><th>Indicateur</th><th>Définition</th><th style="text-align:right;">Valeur</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Conversations</strong></td><td>Sessions avec &ge; 1 question</td><td style="text-align:right;"><strong style="color:var(--marque-principale);">2 522</strong></td></tr>
+        <tr><td><strong>Taux conversation</strong></td><td>Conversations / Sessions</td><td style="text-align:right;"><strong style="color:var(--marque-principale);">43,04 %</strong></td></tr>
+        <tr><td><strong>Pénétration</strong></td><td>Chatbot / Connectés</td><td style="text-align:right;"><strong style="color:var(--marque-principale);">1,28 %</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ALERTES SVG -->
+  <div class="comp-label">Alertes (icônes SVG)</div>
+  <div class="alerte info">
+    <svg class="icone" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#009597" stroke-width="1.5"/><path d="M10 9v5M10 6.5v.01" stroke="#009597" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div><strong style="color:var(--marque-principale);">Info</strong> — Tendance haussière stable sur 3 semaines.</div>
+  </div>
+  <div class="alerte attention">
+    <svg class="icone" viewBox="0 0 20 20" fill="none"><path d="M10 2L1 18h18L10 2z" stroke="#E07A2F" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14.5v.01" stroke="#E07A2F" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div><strong style="color:var(--orange);">Attention</strong> — Écarts significatifs à investiguer.</div>
+  </div>
+  <div class="alerte erreur">
+    <svg class="icone" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#F47682" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="#F47682" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div><strong style="color:var(--corail);">Erreur</strong> — Désalignement nom / mesure à corriger.</div>
+  </div>
+  <div class="alerte succes">
+    <svg class="icone" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#2D8E57" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="#2D8E57" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div><strong style="color:var(--vert);">Succès</strong> — Tous les KPI sont reproductibles.</div>
+  </div>
+
+  <!-- CITATION / ENCADRÉ -->
+  <div class="comp-label">Citation / Encadré</div>
+  <div style="background:var(--pastel-sarcelle-tres-clair); border-left:4px solid var(--marque-principale); border-radius:4px; padding:16px 20px; max-width:640px; margin-bottom:var(--espace-m);">
+    <div style="font-size:14px; font-style:italic; color:var(--texte-principal); line-height:1.6;">Le taux de pénétration du chatbot reste un levier sous-exploité malgré un trafic web en croissance continue.</div>
+    <div style="font-size:10px; color:var(--texte-secondaire); margin-top:8px;">— Audit KPI Chatbot, T1 2026</div>
+  </div>
+
+  <!-- MODALE -->
+  <div class="comp-label">Modale</div>
+  <div class="comp-rangee">
+    <button class="btn btn-primaire" onclick="document.getElementById('modale-demo').classList.add('visible')">Ouvrir la modale</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 05. ÉTATS INTERACTIFS                        -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="web">
+  <div class="ds-section-titre" id="sec-05"><span class="lt">05 · États interactifs</span></div>
+
+  <div class="comp-label">Bouton primaire — tous les états</div>
+  <div class="etats-grille" style="max-width:800px; margin-bottom:var(--espace-m);">
+    <div class="etat-demo">
+      <button class="btn btn-primaire">Repos</button>
+      <div class="etat-label">Repos</div>
+    </div>
+    <div class="etat-demo">
+      <button class="btn btn-primaire" style="background:var(--marque-sarcelle-fonce);">Survol</button>
+      <div class="etat-label">Survol (:hover)</div>
+    </div>
+    <div class="etat-demo">
+      <button class="btn btn-primaire" style="outline:2px solid var(--marque-principale); outline-offset:2px;">Focus</button>
+      <div class="etat-label">Focus (:focus-visible)</div>
+    </div>
+    <div class="etat-demo">
+      <button class="btn btn-primaire" style="transform:scale(0.97);">Actif</button>
+      <div class="etat-label">Actif (:active)</div>
+    </div>
+    <div class="etat-demo">
+      <button class="btn btn-primaire" disabled>Désactivé</button>
+      <div class="etat-label">Désactivé (:disabled)</div>
+    </div>
+  </div>
+
+  <div class="comp-label">Champ de saisie — tous les états</div>
+  <div class="etats-grille" style="max-width:800px; margin-bottom:var(--espace-m);">
+    <div class="etat-demo">
+      <input class="champ" style="width:130px;" value="Repos" readonly>
+      <div class="etat-label">Repos</div>
+    </div>
+    <div class="etat-demo">
+      <input class="champ" style="width:130px; border-color:var(--gris-neutre);" value="Survol" readonly>
+      <div class="etat-label">Survol (:hover)</div>
+    </div>
+    <div class="etat-demo">
+      <input class="champ" style="width:130px; border-color:var(--marque-principale); box-shadow:0 0 0 3px rgba(0,149,151,0.15);" value="Focus" readonly>
+      <div class="etat-label">Focus (:focus)</div>
+    </div>
+    <div class="etat-demo">
+      <input class="champ erreur-champ" style="width:130px;" value="Erreur" readonly>
+      <div class="etat-label">Erreur</div>
+    </div>
+    <div class="etat-demo">
+      <input class="champ" style="width:130px;" disabled value="Désactivé">
+      <div class="etat-label">Désactivé</div>
+    </div>
+  </div>
+
+  <div class="tableau-enveloppe" style="max-width:700px;">
+    <table class="tableau">
+      <thead><tr><th>État</th><th>Bouton</th><th>Champ</th><th>Carte</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Repos</strong></td><td>bg principale</td><td>bordure gris-clair</td><td>bordure gris-clair</td></tr>
+        <tr><td><strong>Survol</strong></td><td>bg sarcelle-foncé</td><td>bordure gris-neutre</td><td>ombre + bordure principale</td></tr>
+        <tr><td><strong>Focus visible</strong></td><td>outline 2px principale offset 2px</td><td>bordure principale + ombre 3px</td><td>outline 2px principale</td></tr>
+        <tr><td><strong>Actif</strong></td><td>scale(0.97)</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>Désactivé</strong></td><td>opacity 0.45 + no-pointer</td><td>opacity 0.45 + bg cassé</td><td>—</td></tr>
+        <tr><td><strong>Erreur</strong></td><td>—</td><td>bordure corail + ombre corail</td><td>—</td></tr>
+        <tr><td><strong>Chargement</strong></td><td>texte masqué + spinner</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 06. PATTERNS DE LAYOUT                       -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="web">
+  <div class="ds-section-titre" id="sec-06"><span class="lt">06 · Patterns de layout</span></div>
+
+  <div class="tableau-enveloppe">
+    <table class="tableau">
+      <thead><tr><th>Pattern</th><th>Structure</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Barre haute + Onglets</strong></td><td>Header sticky · surtitre + h1 + onglets · border-bottom 3px principale</td><td>Dashboards multi-vues</td></tr>
+        <tr><td><strong>Barre latérale + Principal</strong></td><td>Grid 220px / 1fr · sidebar sticky avec nav + meta</td><td>Documents de référence</td></tr>
+        <tr><td><strong>Cartes verre</strong></td><td>backdrop-filter blur(20px) · border rgba(255,255,255,0.7)</td><td>Présentations premium</td></tr>
+        <tr><td><strong>Grille 2 colonnes</strong></td><td>1fr 1fr · gouttière 24px</td><td>Comparaisons A/B, arbitrages</td></tr>
+        <tr><td><strong>Grille 3 colonnes</strong></td><td>repeat(3, 1fr) · gouttière 16px</td><td>Décomposition MECE, piliers</td></tr>
+        <tr><td><strong>Grille 4 colonnes</strong></td><td>repeat(4, 1fr) · gouttière 16px</td><td>Bande KPI, principes</td></tr>
+        <tr><td><strong>Section carte</strong></td><td>Fond blanc · rayon 12px · bordure gris-clair · padding 48px</td><td>Blocs dans layout multi-onglets</td></tr>
+        <tr><td><strong>Médaillon</strong></td><td>3 cols dans conteneur pastel-sarcelle · bordure principale</td><td>Couches architecture</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 07. GOUVERNANCE COULEUR                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="identite">
+  <div class="ds-section-titre" id="sec-07"><span class="lt">07 · Gouvernance couleur</span></div>
+
+  <div class="comp-label">Arbre de décision — pour chaque élément à coloriser</div>
+  <div style="display:flex; flex-direction:column; gap:12px; max-width:700px; margin-bottom:var(--espace-s);">
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+      <span style="background:var(--marque-principale); color:#FFF; font-size:14px; font-weight:700; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">1</span>
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--texte-principal);">L'élément représente-t-il l'identité Sofinco ou structure-t-il l'argument ?</div>
+        <div style="font-size:12px; color:var(--texte-secondaire); margin-top:4px;">Oui → <strong style="color:var(--marque-principale);">Cœur de marque</strong> (une des 4 couleurs, selon son rôle exclusif)</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+      <span style="background:var(--marque-principale); color:#FFF; font-size:14px; font-weight:700; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">2</span>
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--texte-principal);">L'élément porte-t-il un sens (statut, risque, catégorie sémantique) ?</div>
+        <div style="font-size:12px; color:var(--texte-secondaire); margin-top:4px;">Oui → <strong style="color:var(--violet);">Accent sémantique</strong> (selon la table canonique — un sens unique par couleur)</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+      <span style="background:var(--marque-principale); color:#FFF; font-size:14px; font-weight:700; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">3</span>
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--texte-principal);">Sinon, l'élément a-t-il juste besoin d'être groupé visuellement ?</div>
+        <div style="font-size:12px; color:var(--texte-secondaire); margin-top:4px;">Oui → <strong style="color:var(--marque-sarcelle-fonce);">Fond pastel neutre</strong> (jamais pour signaler un statut ou une alerte)</div>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:12px; color:var(--texte-secondaire); line-height:1.7; margin-bottom:var(--espace-s); padding:12px 16px; background:var(--pastel-sarcelle-tres-clair); border-left:3px solid var(--marque-principale); border-radius:4px; max-width:700px;">
+    <strong style="color:var(--marque-principale);">En cas de doute</strong> entre pastel et accent sémantique, choisir pastel. Les accents sémantiques doivent rester rares pour rester lisibles.
+  </div>
+
+  <div class="comp-label">Règle de parcimonie</div>
+  <div style="display:flex; gap:var(--espace-xs); margin-bottom:var(--espace-s); flex-wrap:wrap;">
+    <div class="kpi" style="min-width:160px;"><div class="valeur">3–4</div><div class="libelle">Couleurs sémantiques / slide</div></div>
+    <div class="kpi" style="min-width:160px;"><div class="valeur">5–6</div><div class="libelle">Couleurs sémantiques / deck</div></div>
+  </div>
+  <div style="font-size:12px; color:var(--texte-secondaire); line-height:1.7; max-width:700px; margin-bottom:var(--espace-s);">
+    Au-delà, l'œil cesse de décoder. Si vert = validé en slide 3, il reste validé jusqu'à la dernière slide.
+  </div>
+
+  <div class="comp-label">Usages des pastels</div>
+  <div class="tableau-enveloppe" style="max-width:700px;">
+    <table class="tableau">
+      <thead><tr><th>Usage autorisé</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>Fond d'encadré / citation (+ bordure couleur gauche)</td><td>Callout box teal pastel</td></tr>
+        <tr><td>Blocs MECE d'importance égale</td><td>Alterner les tons pour différencier sans hiérarchiser</td></tr>
+        <tr><td>Fond slide chapitre</td><td>#F5F5F5 / #F7F8FA uniquement — pas de pastels colorés</td></tr>
+        <tr><td>Rangées alternées de tableau</td><td>#FFFFFF / #F5F5F5</td></tr>
+        <tr><td>Colonnes Avant/Après</td><td>#F5F5F5 (avant, neutre) / #EBF7F7 (après, subtil)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:12px; color:var(--corail); font-weight:600; margin-top:8px;">
+    Interdit : utiliser un pastel pour signaler un statut, une alerte ou une catégorie sémantique — rôle exclusif des accents.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 11. TOKENS — COPIER-COLLER + EXPORT          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="ds-section" data-zone="identite">
+  <div class="ds-section-titre" id="sec-11"><span class="lt">11 · Tokens — CSS</span></div>
+
+  <div class="comp-label">Variables CSS</div>
+  <pre class="bloc-code"><span class="code-commentaire">/* ═══ SOFINCO DESIGN TOKENS ═══ */</span>
+<span class="code-commentaire">/* Typographie : Open Sans exclusivement */</span>
+
+<span class="code-selecteur">:root</span> {
+  <span class="code-commentaire">/* Cœur de marque */</span>
+  <span class="code-propriete">--marque-principale</span>: <span class="code-valeur">#009597</span>;
+  <span class="code-propriete">--marque-ardoise</span>: <span class="code-valeur">#666E8A</span>;
+  <span class="code-propriete">--marque-marine</span>: <span class="code-valeur">#071621</span>;
+  <span class="code-propriete">--marque-sarcelle-fonce</span>: <span class="code-valeur">#006466</span>;
+
+  <span class="code-commentaire">/* Neutres */</span>
+  <span class="code-propriete">--blanc</span>: <span class="code-valeur">#FFFFFF</span>;
+  <span class="code-propriete">--blanc-casse</span>: <span class="code-valeur">#F7F8FA</span>;
+  <span class="code-propriete">--blanc-casse-2</span>: <span class="code-valeur">#F5F5F5</span>;
+  <span class="code-propriete">--gris-clair</span>: <span class="code-valeur">#E8E8E8</span>;
+  <span class="code-propriete">--gris-neutre</span>: <span class="code-valeur">#C0C4CC</span>;
+
+  <span class="code-commentaire">/* Pastels */</span>
+  <span class="code-propriete">--pastel-sarcelle-tres-clair</span>: <span class="code-valeur">#F0F9F9</span>;
+  <span class="code-propriete">--pastel-sarcelle-clair</span>: <span class="code-valeur">#EBF7F7</span>;
+  <span class="code-propriete">--pastel-sarcelle-profond</span>: <span class="code-valeur">#E0F5F5</span>;
+  <span class="code-propriete">--pastel-sarcelle-gris</span>: <span class="code-valeur">#D2DCDE</span>;
+  <span class="code-propriete">--pastel-vert</span>: <span class="code-valeur">#E5F2D0</span>;
+  <span class="code-propriete">--pastel-vert-alt</span>: <span class="code-valeur">#DAF2D0</span>;
+  <span class="code-propriete">--pastel-violet</span>: <span class="code-valeur">#E2D6EC</span>;
+  <span class="code-propriete">--pastel-violet-alt</span>: <span class="code-valeur">#ECDFF5</span>;
+  <span class="code-propriete">--pastel-orange</span>: <span class="code-valeur">#FDE8D0</span>;
+  <span class="code-propriete">--pastel-orange-alt</span>: <span class="code-valeur">#FBE2D5</span>;
+  <span class="code-propriete">--pastel-rose</span>: <span class="code-valeur">#F6E7E6</span>;
+  <span class="code-propriete">--pastel-bleu</span>: <span class="code-valeur">#D8EAF7</span>;
+
+  <span class="code-commentaire">/* Accents sémantiques */</span>
+  <span class="code-propriete">--vert</span>: <span class="code-valeur">#2D8E57</span>;  <span class="code-propriete">--vert-fonce</span>: <span class="code-valeur">#196B24</span>;
+  <span class="code-propriete">--bleu</span>: <span class="code-valeur">#3A7CC3</span>;  <span class="code-propriete">--bleu-fonce</span>: <span class="code-valeur">#156082</span>;
+  <span class="code-propriete">--violet</span>: <span class="code-valeur">#7030A0</span>;
+  <span class="code-propriete">--orange</span>: <span class="code-valeur">#E07A2F</span>;
+  <span class="code-propriete">--corail</span>: <span class="code-valeur">#F47682</span>;
+  <span class="code-propriete">--jaune</span>: <span class="code-valeur">#FFC000</span>;
+
+  <span class="code-commentaire">/* Police */</span>
+  <span class="code-propriete">--police</span>: <span class="code-valeur">'Open Sans', sans-serif</span>;
+
+  <span class="code-commentaire">/* Espacements — base 4 */</span>
+  <span class="code-propriete">--espace-4xs</span>: <span class="code-valeur">4px</span>;   <span class="code-propriete">--espace-3xs</span>: <span class="code-valeur">8px</span>;
+  <span class="code-propriete">--espace-2xs</span>: <span class="code-valeur">12px</span>;  <span class="code-propriete">--espace-xs</span>: <span class="code-valeur">16px</span>;
+  <span class="code-propriete">--espace-s</span>: <span class="code-valeur">24px</span>;   <span class="code-propriete">--espace-m</span>: <span class="code-valeur">32px</span>;
+  <span class="code-propriete">--espace-l</span>: <span class="code-valeur">48px</span>;   <span class="code-propriete">--espace-xl</span>: <span class="code-valeur">64px</span>;
+}</pre>
+
+  <div class="export-rangee">
+    <button class="btn btn-primaire" onclick="copierCSS()">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="11" height="11" rx="2"/><path d="M3 14V4a1 1 0 011-1h10"/></svg>
+      Copier le CSS
+    </button>
+  </div>
+</div>
+
+
+</div><!-- fin .ds-enveloppe -->
+
+</div><!-- fin .ds-corps -->
+
+<!-- MODALE DEMO -->
+<div class="modale-fond" id="modale-demo" onclick="if(event.target===this)this.classList.remove('visible')">
+  <div class="modale">
+    <button class="modale-fermer" onclick="document.getElementById('modale-demo').classList.remove('visible')" aria-label="Fermer">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l10 10M15 5L5 15"/></svg>
+    </button>
+    <h3>Confirmation requise</h3>
+    <p>Voulez-vous valider cette action ? Cette opération ne peut pas être annulée.</p>
+    <div class="modale-actions">
+      <button class="btn btn-contour" onclick="document.getElementById('modale-demo').classList.remove('visible')">Annuler</button>
+      <button class="btn btn-primaire" onclick="document.getElementById('modale-demo').classList.remove('visible')">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<footer class="ds-pied">
+  Design System <strong>Sofinco</strong> — Output HTML
+</footer>
+
+<script>
+/* ── Filtrage par zone ── */
+function filtrerZone(zone, btn) {
+  document.querySelectorAll('.ds-nav-btn').forEach(b => b.classList.remove('actif'));
+  btn.classList.add('actif');
+  document.querySelectorAll('.ds-section[data-zone]').forEach(s => {
+    if (zone === 'tout' || s.dataset.zone === zone) {
+      s.classList.remove('masque');
+    } else {
+      s.classList.add('masque');
+    }
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Thème clair / sombre ── */
+function basculerTheme() {
+  const html = document.documentElement;
+  const actuel = html.getAttribute('data-theme');
+  const nouveau = actuel === 'clair' ? 'sombre' : 'clair';
+  html.setAttribute('data-theme', nouveau);
+  document.querySelector('.label-clair').style.display = nouveau === 'clair' ? '' : 'none';
+  document.querySelector('.label-sombre').style.display = nouveau === 'sombre' ? '' : 'none';
+}
+
+/* ── Onglets ── */
+function activerOnglet(el) {
+  el.parentElement.querySelectorAll('.onglet').forEach(o => o.classList.remove('actif'));
+  el.classList.add('actif');
+}
+
+/* ── Copier CSS ── */
+function copierCSS() {
+  const css = document.querySelector('.bloc-code').textContent;
+  navigator.clipboard.writeText(css).then(() => {
+    const btn = event.target.closest('.btn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 10l3 3 7-7"/></svg> Copié';
+    setTimeout(() => btn.innerHTML = orig, 2000);
+  });
+}
+
+/* ── Sommaire latéral : surbrillance section active ── */
+(function () {
+  const liens = Array.from(document.querySelectorAll('.ds-cote-lien'));
+  if (!liens.length) return;
+  const carte = new Map(liens.map(l => [l.getAttribute('href').slice(1), l]));
+  const cibles = liens.map(l => document.getElementById(l.getAttribute('href').slice(1))).filter(Boolean);
+  const activer = id => liens.forEach(l => l.classList.toggle('actif', l.getAttribute('href').slice(1) === id));
+  const obs = new IntersectionObserver((entrees) => {
+    const visibles = entrees.filter(e => e.isIntersecting)
+      .sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top);
+    if (visibles.length) activer(visibles[0].target.id);
+  }, { rootMargin: '-64px 0px -70% 0px', threshold: 0 });
+  cibles.forEach(c => obs.observe(c));
+  if (cibles[0]) activer(cibles[0].id);
+})();
+</script>
+</body>
+</html>

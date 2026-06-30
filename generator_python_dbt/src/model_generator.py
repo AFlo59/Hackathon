@@ -11,6 +11,7 @@ Consomme le document produit par :func:`src.yaml_config.build_staging_config`
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .normalizer import build_sql_expression
@@ -25,6 +26,11 @@ def _format_unique_key(unique_key: Any) -> str:
     return f"'{unique_key}'"
 
 
+def _str_list(values: Any) -> str:
+    """Rend une liste de chaînes pour un argument Jinja : ``['a', 'b']``."""
+    return "[" + ", ".join(f"'{v}'" for v in values) + "]"
+
+
 def _config_block(config: dict[str, Any]) -> str:
     """Construit le bloc ``{{ config(...) }}``."""
     model = config["model"]
@@ -34,27 +40,88 @@ def _config_block(config: dict[str, Any]) -> str:
     lines = [f"    materialized='{materialized}'"]
     if materialized == "incremental":
         lines.append("    incremental_strategy='merge'")
+        on_change = config.get("on_schema_change")
+        if on_change:
+            lines.append(f"    on_schema_change='{on_change}'")
     if materialized in ("incremental", "table") and unique_key != NO_UNIQUE_KEY:
         lines.append(f"    unique_key={_format_unique_key(unique_key)}")
+
+    # Cluster keys — uniquement pour table / incremental (pas view ni ephemeral).
+    cluster = config.get("cluster_by", {})
+    if materialized in ("incremental", "table") and cluster.get("enabled") and cluster.get("columns"):
+        lines.append(f"    cluster_by={_str_list(cluster['columns'])}")
+
     if model.get("tags"):
-        tags = ", ".join(f"'{t}'" for t in model["tags"])
-        lines.append(f"    tags=[{tags}]")
+        lines.append(f"    tags={_str_list(model['tags'])}")
     if model.get("schema"):
         lines.append(f"    schema='{model['schema']}'")
+
+    # Hooks
+    hooks = config.get("hooks", {})
+    if hooks.get("pre_hook"):
+        lines.append(f"    pre_hook={_str_list(hooks['pre_hook'])}")
+    if hooks.get("post_hook"):
+        lines.append(f"    post_hook={_str_list(hooks['post_hook'])}")
+
+    # Grants dbt natifs : {select: [ROLE_A, ROLE_B]}
+    grants = config.get("grants", {})
+    if grants:
+        inner = ", ".join(f"'{priv}': {_str_list(roles)}" for priv, roles in grants.items())
+        lines.append(f"    grants={{{inner}}}")
+
+    # persist_docs : propagation des descriptions dans Snowflake
+    persist = config.get("persist_docs", {})
+    if persist.get("relation") or persist.get("columns"):
+        lines.append(
+            f"    persist_docs={{'relation': {bool(persist.get('relation'))}, "
+            f"'columns': {bool(persist.get('columns'))}}}"
+        )
 
     body = ",\n".join(lines)
     return "{{\n  config(\n" + body + "\n  )\n}}"
 
 
-# Ordre et libellés des groupes de colonnes (cf. style guide dbt).
-_GROUP_ORDER: tuple[tuple[str, str], ...] = (
-    ("ids", "-- ids"),
-    ("strings", "-- strings"),
-    ("numerics", "-- numerics"),
-    ("booleans", "-- booleans"),
-    ("dates", "-- dates"),
-    ("timestamps", "-- timestamps"),
-)
+# Ordre des groupes de colonnes.
+_GROUP_KEYS: tuple[str, ...] = ("ids", "strings", "numerics", "booleans", "dates", "timestamps")
+
+# Libellés de section par maillon dbt. Le staging suit le style guide dbt
+# (ids/strings/numerics…) ; les autres maillons utilisent des libellés sémantiques.
+_LAYER_LABELS: dict[str, dict[str, str]] = {
+    "staging": {
+        "ids": "-- ids", "strings": "-- strings", "numerics": "-- numerics",
+        "booleans": "-- booleans", "dates": "-- dates", "timestamps": "-- timestamps",
+        "raw": "-- raw (colonnes brutes conservées)", "audit": "-- audit",
+    },
+    "intermediate": {
+        "ids": "-- [Clés de jointure]", "strings": "-- [Dimensions enrichies]",
+        "numerics": "-- [Métriques pré-calculées]", "booleans": "-- [Flags / indicateurs métier]",
+        "dates": "-- [Dates / périodes]", "timestamps": "-- [Timestamps]",
+        "raw": "-- [Colonnes brutes (raw)]", "audit": "-- [Colonnes d'audit]",
+    },
+    "marts_fct": {
+        "ids": "-- [Clés de dimension (FK)]", "strings": "-- [Dimensions]",
+        "numerics": "-- [Métriques / faits]", "booleans": "-- [Flags]",
+        "dates": "-- [Dates / périodes]", "timestamps": "-- [Timestamps]",
+        "raw": "-- [Colonnes brutes (raw)]", "audit": "-- [Colonnes d'audit]",
+    },
+    "marts_dim": {
+        "ids": "-- [Clé naturelle / surrogate]", "strings": "-- [Attributs descriptifs]",
+        "numerics": "-- [Attributs numériques]", "booleans": "-- [Flags]",
+        "dates": "-- [Dates de validité]", "timestamps": "-- [Timestamps]",
+        "raw": "-- [Colonnes brutes (raw)]", "audit": "-- [Colonnes d'audit]",
+    },
+}
+
+_LAYER_DESC: dict[str, str] = {
+    "staging": "staging (brut nettoyé, 1 source = 1 modèle)",
+    "intermediate": "intermediate (jointures, agrégations légères)",
+    "marts_fct": "marts / fact (métriques, faits)",
+    "marts_dim": "marts / dimension (attributs descriptifs)",
+}
+
+
+def _labels(config: dict[str, Any]) -> dict[str, str]:
+    return _LAYER_LABELS.get(config["model"].get("layer", "staging"), _LAYER_LABELS["staging"])
 
 
 def _column_group(target: str, cast: str, pk_targets: set[str]) -> str:
@@ -83,10 +150,20 @@ def _pk_targets(config: dict[str, Any]) -> set[str]:
     return set()
 
 
+def _audit_expressions() -> list[str]:
+    """Colonnes d'audit dbt ajoutées en fin de modèle."""
+    return [
+        "current_timestamp() as _loaded_at",
+        "'{{ invocation_id }}' as _dbt_invocation_id",
+    ]
+
+
 def _select_body(config: dict[str, Any], indent: str = "        ") -> str:
     """Construit le corps du SELECT, colonnes regroupées par type avec commentaires."""
     pk_targets = _pk_targets(config)
-    grouped: dict[str, list[str]] = {key: [] for key, _ in _GROUP_ORDER}
+    labels = _labels(config)
+    keep_all_raw = config.get("normalization", {}).get("keep_all_raw", False)
+    grouped: dict[str, list[str]] = {key: [] for key in _GROUP_KEYS}
     raw_exprs: list[str] = []
 
     for col in config["columns"]:
@@ -101,18 +178,21 @@ def _select_body(config: dict[str, Any], indent: str = "        ") -> str:
         )
         group = _column_group(col["target"], col["cast"], pk_targets)
         grouped[group].append(f"{expr} as {col['target']}")
-        if col.get("keep_raw"):
+        if col.get("keep_raw") or keep_all_raw:
             raw_exprs.append(f'"{col["source"]}" as raw_{col["target"]}')
 
     # (is_expression, texte) — les commentaires ne portent pas de virgule.
     rows: list[tuple[bool, str]] = []
-    for key, label in _GROUP_ORDER:
+    for key in _GROUP_KEYS:
         if grouped[key]:
-            rows.append((False, label))
+            rows.append((False, labels[key]))
             rows.extend((True, expr) for expr in grouped[key])
     if raw_exprs:
-        rows.append((False, "-- raw (colonnes brutes conservées)"))
+        rows.append((False, labels["raw"]))
         rows.extend((True, expr) for expr in raw_exprs)
+    if config.get("audit", {}).get("enabled"):
+        rows.append((False, labels["audit"]))
+        rows.extend((True, expr) for expr in _audit_expressions())
 
     if not any(is_expr for is_expr, _ in rows):
         return f"{indent}*"
@@ -125,14 +205,88 @@ def _select_body(config: dict[str, Any], indent: str = "        ") -> str:
     return "\n".join(lines)
 
 
+def _render_value(value: Any) -> str:
+    """Rend une valeur SQL : numérique brute, sinon chaîne échappée."""
+    text = str(value)
+    if re.fullmatch(r"-?\d+(\.\d+)?", text):
+        return text
+    return "'" + text.replace("'", "''") + "'"
+
+
+def _render_filter(flt: dict[str, Any]) -> str:
+    """Rend un filtre de colonne en condition SQL."""
+    col = flt.get("column", "")
+    operator = flt.get("operator", "in")
+    if operator == "custom":
+        return str(flt.get("custom_expr", "")).strip()
+    if operator in ("in", "not_in"):
+        values = ", ".join(_render_value(v) for v in flt.get("values", []))
+        keyword = "in" if operator == "in" else "not in"
+        return f'"{col}" {keyword} ({values})'
+    if operator == "between":
+        vals = flt.get("values", [])
+        if len(vals) >= 2:
+            return f'"{col}" between {_render_value(vals[0])} and {_render_value(vals[1])}'
+    return ""
+
+
+def _where_block(config: dict[str, Any], indent: str = "    ") -> str:
+    """Construit le bloc WHERE : filtres métier (AND/OR) + filtre delta incrémental.
+
+    Le filtre delta est encadré par ``{% if is_incremental() %}`` ; on s'appuie
+    sur ``where 1=1`` pour composer trivialement filtres métier et delta.
+    """
+    materialized = config["model"]["materialized"]
+    delta = config.get("delta", {})
+    wc = config.get("where_clause", {})
+    mode = "or" if str(wc.get("mode", "and")).lower() == "or" else "and"
+
+    rendered = [r for f in wc.get("filters", []) if f and (r := _render_filter(f))]
+    delta_active = (
+        materialized == "incremental" and delta.get("enabled") and delta.get("column")
+    )
+    if not rendered and not delta_active:
+        return ""
+
+    lines = [f"{indent}where 1=1"]
+    if rendered:
+        joiner = f"\n{indent}  {mode} "
+        joined = joiner.join(rendered)
+        if mode == "or" and len(rendered) > 1:
+            joined = f"({joined})"
+        lines.append(f"{indent}  and {joined}")
+    if delta_active:
+        delta_col = delta["column"]
+        target = next(
+            (c["target"] for c in config["columns"] if c["source"] == delta_col),
+            delta_col,
+        )
+        lines.append(f"{indent}{{% if is_incremental() %}}")
+        lines.append(f'{indent}  and "{delta_col}" > (select max({target}) from {{{{ this }}}})')
+        lines.append(f"{indent}{{% endif %}}")
+    return "\n" + "\n".join(lines)
+
+
+def _banner(config: dict[str, Any]) -> str:
+    """Bannière d'en-tête décrivant le modèle et son maillon."""
+    model = config["model"]
+    layer = model.get("layer", "staging")
+    source = config["source"]
+    line = "-- " + "=" * 61
+    return "\n".join([
+        line,
+        f"-- {layer.upper()} : {model['name']}",
+        f"-- Source  : {source['name']}.{source['table']}",
+        f"-- Maillon : {_LAYER_DESC.get(layer, layer)}",
+        line,
+    ])
+
+
 def generate_sql(config: dict[str, Any]) -> str:
     """Génère le SQL DBT du modèle staging."""
     source = config["source"]
-    model = config["model"]
-    materialized = model["materialized"]
-    delta = config.get("delta", {})
 
-    parts: list[str] = []
+    parts: list[str] = [_banner(config)]
 
     if config.get("purge", {}).get("enabled"):
         parts.append(
@@ -145,20 +299,7 @@ def generate_sql(config: dict[str, Any]) -> str:
     source_ref = f"{{{{ source('{source['name']}', '{source['table']}') }}}}"
 
     select_body = _select_body(config)
-
-    where_clause = ""
-    if materialized == "incremental" and delta.get("enabled") and delta.get("column"):
-        delta_col = delta["column"]
-        # Colonne cible normalisée correspondante (pour le max côté destination).
-        target = next(
-            (c["target"] for c in config["columns"] if c["source"] == delta_col),
-            delta_col,
-        )
-        where_clause = (
-            "\n    {% if is_incremental() %}\n"
-            f'    where "{delta_col}" > (select max({target}) from {{{{ this }}}})\n'
-            "    {% endif %}"
-        )
+    where_clause = _where_block(config)
 
     cte = (
         "with source as (\n"
@@ -194,10 +335,32 @@ def generate_schema_yml(config: dict[str, Any]) -> str:
         if not col.get("include", True):
             continue
         entry: dict[str, Any] = {"name": col["target"]}
+        if col.get("comment"):
+            entry["description"] = col["comment"]
         if col["target"] in pk_targets:
             # Clé unique simple → unique + not_null ; clé composite → not_null par colonne.
             entry["tests"] = ["unique", "not_null"] if not isinstance(unique_key, list) else ["not_null"]
+        if col.get("pii"):
+            entry["meta"] = {"pii": True}
         columns_doc.append(entry)
+
+        # Colonne brute conservée → documentée avec meta.raw.
+        if col.get("keep_raw") or config.get("normalization", {}).get("keep_all_raw"):
+            columns_doc.append(
+                {
+                    "name": f"raw_{col['target']}",
+                    "description": f"Valeur brute non normalisée de {col['source']}.",
+                    "meta": {"raw": True},
+                }
+            )
+
+    if config.get("audit", {}).get("enabled"):
+        columns_doc.append(
+            {"name": "_loaded_at", "description": "Horodatage de chargement dbt."}
+        )
+        columns_doc.append(
+            {"name": "_dbt_invocation_id", "description": "Identifiant d'exécution dbt."}
+        )
 
     doc: dict[str, Any] = {
         "version": 2,

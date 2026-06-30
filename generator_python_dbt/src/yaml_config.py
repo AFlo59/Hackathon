@@ -12,8 +12,9 @@ Format du document :
       name: raw
       table: T_COMMANDE
     model:
-      name: stg_commande
+      name: stg_raw__commande
       materialized: incremental   # view | table | incremental | ephemeral
+      layer: staging              # staging | intermediate | marts_fct | marts_dim
       schema: staging
       tags: [staging]
       meta: {owner: data-team}
@@ -23,9 +24,25 @@ Format du document :
       column: UPDATED_AT
     purge:
       enabled: false
+    cluster_by:                    # table / incremental uniquement
+      enabled: false
+      columns: []
+    audit:
+      enabled: false               # ajoute _loaded_at, _dbt_invocation_id
+    where_clause:
+      mode: and                    # and | or
+      filters:                     # [{column, operator, values, custom_expr}]
+        - {column: STATUT, operator: in, values: [ACTIF, VALIDE]}
+    hooks:
+      pre_hook: []
+      post_hook: []
+    grants: {}                     # {select: [ROLE_REPORTER]}
+    persist_docs: {relation: false, columns: false}
+    on_schema_change: null         # fail | ignore | append_new_columns | sync_all_columns
     normalization:
       prefix: "T_CMD_"
       suffix: ""
+      keep_all_raw: false          # raw_* pour toutes les colonnes
     columns:
       - source: T_CMD_NOM
         target: nom
@@ -36,6 +53,8 @@ Format du document :
         trim: true
         coalesce: null             # littéral SQL ou null
         is_string: true
+        comment: "Nom du client"   # description (commentaire Snowflake)
+        pii: true                  # donnée personnelle détectée
 """
 
 from __future__ import annotations
@@ -54,6 +73,13 @@ NO_UNIQUE_KEY = "TODO_SET_UNIQUE_KEY"
 _DELTA_HINTS = ("updated_at", "update_date", "modified_at", "maj", "date_maj", "last_update")
 
 _NUMBER_RE = re.compile(r"NUMBER\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)", re.IGNORECASE)
+
+# Indices de données personnelles (PII) — déclenchent un badge ⚠️ et meta.pii.
+_PII_TOKENS = {"nom", "prenom", "tel", "mdp", "cni", "nir", "iban", "siret", "rib"}
+_PII_SUBSTRINGS = (
+    "email", "mail", "phone", "telephone", "password", "passwd",
+    "carte", "card", "adresse", "address", "passport", "naissance", "birth",
+)
 
 
 # --------------------------------------------------------------------------- #
@@ -127,6 +153,20 @@ def _default_coalesce(cast: str) -> str | None:
     return None
 
 
+def detect_pii(name: str) -> bool:
+    """Indique si un nom de colonne évoque une donnée personnelle (PII).
+
+    Combine une correspondance exacte sur tokens (``nom``, ``iban``…) et une
+    recherche de sous-chaînes (``email``, ``adresse``…) sur le nom normalisé,
+    pour limiter les faux positifs (ex : ``nombre`` ne déclenche pas ``nom``).
+    """
+    norm = normalize_name(name)
+    tokens = set(norm.split("_"))
+    if tokens & _PII_TOKENS:
+        return True
+    return any(sub in norm for sub in _PII_SUBSTRINGS)
+
+
 # Préfixes de nom de table fréquents (Oracle/SQL Server style) à retirer pour
 # obtenir un nom d'entité propre : ``T_COMMANDE`` → ``commande``.
 _TABLE_PREFIXES = ("t_", "tbl_", "dim_", "fact_", "fct_", "stg_", "ref_")
@@ -146,12 +186,39 @@ def entity_name(table: str, *, prefix: str = "", suffix: str = "") -> str:
     return name or normalize_name(table)
 
 
-def build_model_name(source_name: str, table: str, *, prefix: str = "", suffix: str = "") -> str:
-    """Construit le nom de modèle staging idiomatique ``stg_<source>__<entity>``.
+#: Maillons dbt — préfixe de modèle et dossier cible par maillon.
+LAYERS: dict[str, dict[str, str]] = {
+    "staging": {"prefix": "stg", "folder": "models/staging"},
+    "intermediate": {"prefix": "int", "folder": "models/intermediate"},
+    "marts_fct": {"prefix": "fct", "folder": "models/marts"},
+    "marts_dim": {"prefix": "dim", "folder": "models/marts"},
+}
 
-    Cf. style guide dbt : le double underscore sépare système source et entité.
+
+def build_model_name(
+    source_name: str,
+    table: str,
+    *,
+    prefix: str = "",
+    suffix: str = "",
+    layer: str = "staging",
+) -> str:
+    """Construit le nom de modèle selon le maillon dbt.
+
+    * ``staging``      → ``stg_<source>__<entity>`` (double underscore, style guide dbt) ;
+    * ``intermediate`` → ``int_<entity>`` ;
+    * ``marts_fct``    → ``fct_<entity>`` ;
+    * ``marts_dim``    → ``dim_<entity>``.
     """
-    return f"stg_{normalize_name(source_name)}__{entity_name(table, prefix=prefix, suffix=suffix)}"
+    entity = entity_name(table, prefix=prefix, suffix=suffix)
+    if layer == "staging":
+        return f"stg_{normalize_name(source_name)}__{entity}"
+    return f"{LAYERS.get(layer, LAYERS['staging'])['prefix']}_{entity}"
+
+
+def layer_folder(layer: str) -> str:
+    """Dossier dbt cible pour un maillon donné."""
+    return LAYERS.get(layer, LAYERS["staging"])["folder"]
 
 
 # --------------------------------------------------------------------------- #
@@ -210,6 +277,7 @@ def build_staging_config(
     suffix: str = "",
     model_name: str | None = None,
     materialized: str = "view",
+    layer: str = "staging",
     schema: str = "staging",
     tags: list[str] | None = None,
     meta: dict[str, Any] | None = None,
@@ -253,6 +321,8 @@ def build_staging_config(
                 "trim": is_string_type(cast),
                 "coalesce": _default_coalesce(cast),
                 "is_string": is_string_type(cast),
+                "comment": col.get("comment") or None,
+                "pii": detect_pii(str(col["name"])),
             }
         )
 
@@ -260,9 +330,10 @@ def build_staging_config(
         "source": {"name": source_name, "table": table},
         "model": {
             "name": model_name or build_model_name(
-                source_name, table, prefix=prefix, suffix=suffix
+                source_name, table, prefix=prefix, suffix=suffix, layer=layer
             ),
             "materialized": materialized,
+            "layer": layer,
             "schema": schema,
             "tags": tags or ["staging"],
             "meta": meta or {},
@@ -270,6 +341,13 @@ def build_staging_config(
         "unique_key": unique_key,
         "delta": {"enabled": bool(delta_col), "column": delta_col},
         "purge": {"enabled": False},
-        "normalization": {"prefix": prefix, "suffix": suffix},
+        "cluster_by": {"enabled": False, "columns": []},
+        "audit": {"enabled": False},
+        "where_clause": {"mode": "and", "filters": []},
+        "hooks": {"pre_hook": [], "post_hook": []},
+        "grants": {},
+        "persist_docs": {"relation": False, "columns": False},
+        "on_schema_change": None,
+        "normalization": {"prefix": prefix, "suffix": suffix, "keep_all_raw": False},
         "columns": config_columns,
     }

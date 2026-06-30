@@ -38,9 +38,29 @@ Connexion ──► Exploration ──► Config ──► Génération
                selection                   sources.yml (+ ZIP)
 ```
 
-## À améliorer / corriger (à traiter ensuite)
+## Performance (lot 1 — fait)
 
-- [ ] Éléments qui ne fonctionnent pas (à identifier ensemble).
-- [ ] Améliorations UX ciblées.
+- **Cache** : `_get_connector` (`@st.cache_resource`) pour la connexion ;
+  `_cached_databases/schemas/tables/columns` (`@st.cache_data(ttl=300)`) pour
+  l'introspection. Aucun appel réseau dans le corps d'une page.
+- **Clé de cache** : `account` (le connecteur, non sérialisable, est passé en
+  `_connector` donc non hashé).
+- **Cascade** : les `selectbox` restent réactifs (nécessaire pour la cascade
+  database→schéma→table) mais les listes sont en cache → reruns sans réseau.
+  C'est le vrai correctif de lenteur (un `st.form` casserait la cascade).
+- **Lazy loading** : colonnes introspectées seulement au clic « Introspecter ».
+- **Spinners localisés** + pagination du tableau de colonnes (> 50 → hauteur fixe).
 
-> Cette section sera enrichie au fur et à mesure des corrections.
+## UX (lot 1 — fait)
+
+- **Copier/coller** corrigé : `navigator.clipboard` + fallback `textarea` /
+  `execCommand` (compatibilité hors HTTPS).
+- **Export ZIP structuré** (arborescence dbt) : `models/staging/<source>/<model>.sql`,
+  `<model>_schema.yml`, `sources/sources_<source>.yml`, `staging_config.yml`.
+- **Historique de session** dans la sidebar (re-téléchargement du ZIP).
+- **Import YAML** : upload d'un `staging_config.yml` → rechargé dans l'éditeur.
+
+## À traiter ensuite
+
+- [ ] Persistance chiffrée des credentials (`cryptography.fernet`).
+- [ ] Détection PII (badge ⚠️) dans l'éditeur de colonnes.

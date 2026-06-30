@@ -92,3 +92,125 @@ def test_purge_comment_when_enabled(mock_config: dict[str, Any]) -> None:
     cfg = copy.deepcopy(mock_config)
     cfg["purge"]["enabled"] = True
     assert "{# PURGE" in generate_sql(cfg)
+
+
+def test_banner_present(mock_config: dict[str, Any]) -> None:
+    sql = generate_sql(mock_config)
+    assert "-- ====" in sql
+    assert "-- STAGING :" in sql
+    assert "-- Maillon :" in sql
+
+
+def test_layer_labels_intermediate(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["model"]["layer"] = "intermediate"
+    sql = generate_sql(cfg)
+    assert "[Clés de jointure]" in sql
+    assert "-- ids" not in sql  # libellés sémantiques, pas dbt-staging
+
+
+def test_cluster_by_in_config_block(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["model"]["materialized"] = "table"
+    cfg["cluster_by"] = {"enabled": True, "columns": ["maj", "id"]}
+    assert "cluster_by=['maj', 'id']" in generate_sql(cfg)
+
+
+def test_cluster_by_ignored_for_view(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["model"]["materialized"] = "view"
+    cfg["cluster_by"] = {"enabled": True, "columns": ["maj"]}
+    assert "cluster_by" not in generate_sql(cfg)
+
+
+def test_where_clause_single_column(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["model"]["materialized"] = "view"
+    cfg["where_clause"] = {
+        "mode": "and",
+        "filters": [{"column": "STATUT", "operator": "in", "values": ["ACTIF", "VALIDE"]}],
+    }
+    sql = generate_sql(cfg)
+    assert '"STATUT" in (' in sql
+    assert "'ACTIF'" in sql
+
+
+def test_where_clause_composite_or(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["model"]["materialized"] = "view"
+    cfg["where_clause"] = {
+        "mode": "or",
+        "filters": [
+            {"column": "PAYS", "operator": "in", "values": ["FR"]},
+            {"column": "MONTANT", "operator": "custom", "custom_expr": "MONTANT > 0"},
+        ],
+    }
+    sql = generate_sql(cfg)
+    assert " or " in sql
+
+
+def test_where_after_delta_filter(mock_config: dict[str, Any]) -> None:
+    # mock_config est incrémental avec delta sur T_CMD_MAJ.
+    cfg = copy.deepcopy(mock_config)
+    cfg["where_clause"] = {
+        "mode": "and",
+        "filters": [{"column": "STATUT", "operator": "in", "values": ["ACTIF"]}],
+    }
+    sql = generate_sql(cfg)
+    assert '"STATUT" in (' in sql
+    assert "is_incremental()" in sql
+
+
+def test_audit_columns_when_enabled(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["audit"] = {"enabled": True}
+    sql = generate_sql(cfg)
+    assert "current_timestamp() as _loaded_at" in sql
+    assert "_dbt_invocation_id" in sql
+
+
+def test_raw_columns_in_dedicated_section(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    next(c for c in cfg["columns"] if c["source"] == "T_CMD_NOM")["keep_raw"] = True
+    sql = generate_sql(cfg)
+    assert "-- raw (colonnes brutes conservées)" in sql
+    assert "raw_nom" in sql
+
+
+def test_keep_all_raw(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["normalization"]["keep_all_raw"] = True
+    sql = generate_sql(cfg)
+    assert "raw_id" in sql and "raw_nom" in sql
+
+
+def test_persist_docs_and_grants(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["grants"] = {"select": ["ROLE_REPORTER"]}
+    cfg["persist_docs"] = {"relation": True, "columns": True}
+    sql = generate_sql(cfg)
+    assert "grants={'select': ['ROLE_REPORTER']}" in sql
+    assert "persist_docs=" in sql
+
+
+def test_raw_column_documented_in_schema(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    next(c for c in cfg["columns"] if c["source"] == "T_CMD_NOM")["keep_raw"] = True
+    doc = yaml.safe_load(generate_schema_yml(cfg))
+    raw = next(c for c in doc["models"][0]["columns"] if c["name"] == "raw_nom")
+    assert raw["meta"] == {"raw": True}
+
+
+def test_comment_in_schema_yaml(mock_config: dict[str, Any]) -> None:
+    cfg = copy.deepcopy(mock_config)
+    cfg["columns"][0]["comment"] = "Identifiant commande"
+    doc = yaml.safe_load(generate_schema_yml(cfg))
+    descriptions = [c.get("description") for c in doc["models"][0]["columns"]]
+    assert "Identifiant commande" in descriptions
+
+
+def test_pii_meta_in_schema_yaml(mock_config: dict[str, Any]) -> None:
+    # T_CMD_NOM → "nom" est marqué PII par build_staging_config.
+    doc = yaml.safe_load(generate_schema_yml(mock_config))
+    nom = next(c for c in doc["models"][0]["columns"] if c["name"] == "nom")
+    assert nom.get("meta") == {"pii": True}

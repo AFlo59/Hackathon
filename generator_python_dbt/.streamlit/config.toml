@@ -1,0 +1,10 @@
+# Thème Sofinco v2.1 — voir docs/colors_enterprise/design_sofinco.html
+[theme]
+primaryColor = "#009597"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F7F8FA"
+textColor = "#071621"
+font = "sans serif"
+
+[server]
+headless = true

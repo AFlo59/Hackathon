@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .yaml_config import detect_delta_column, dump_yaml
+from .yaml_config import detect_delta_column, detect_pii, dump_yaml
 
 
 def build_sources(
@@ -24,6 +24,7 @@ def build_sources(
     columns: list[dict[str, Any]],
     tags: list[str] | None = None,
     meta: dict[str, Any] | None = None,
+    table_comment: str | None = None,
     freshness_warn_hours: int = 24,
     freshness_error_hours: int = 48,
 ) -> dict[str, Any]:
@@ -49,11 +50,17 @@ def build_sources(
             tests = ["not_null"]
 
         entry: dict[str, Any] = {"name": col_name}
+        if col.get("comment"):
+            entry["description"] = str(col["comment"])
         if tests:
             entry["tests"] = tests
+        if detect_pii(col_name):
+            entry["meta"] = {"pii": True}
         table_columns.append(entry)
 
     table_def: dict[str, Any] = {"name": table, "columns": table_columns}
+    if table_comment:
+        table_def["description"] = table_comment
 
     delta_col = detect_delta_column(columns)
     if delta_col:

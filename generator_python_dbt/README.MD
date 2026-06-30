@@ -17,14 +17,17 @@ de l'introspection des tables (`DESC TABLE`).
 generator_python_dbt/
 ├── app.py                       # Streamlit — 4 pages (Connexion / Exploration / Config / Génération)
 ├── requirements.txt
+├── .streamlit/config.toml       # Thème Sofinco
 ├── src/
 │   ├── __init__.py
-│   ├── snowflake_connector.py   # Connexion Snowflake + introspection (DESC TABLE, SHOW …)
+│   ├── snowflake_connector.py   # Connexion + introspection + retry/reconnexion/Key-Pair/SSO
 │   ├── sources_generator.py     # DESC TABLE → sources.yml DBT
-│   ├── yaml_config.py           # Config staging (cast, delta, unique_key) + dump YAML
-│   ├── normalizer.py            # Pipeline de normalisation des noms + expressions SQL
-│   └── model_generator.py       # Config → SQL staging + schema.yml
-└── tests/                       # Suite pytest (normalizer, sources, yaml_config, model)
+│   ├── yaml_config.py           # Config staging (cast, delta, maillon, PII…) + dump YAML
+│   ├── normalizer.py            # Normalisation des noms + expressions SQL
+│   ├── model_generator.py       # Config → SQL staging + schema.yml
+│   └── theme.py                 # Thème visuel Sofinco
+├── tests/                       # Suite pytest (70 tests)
+└── docs/                        # dbt_best_practices / streamlit / colors_enterprise / config_reference
 ```
 
 ## Lancer l'application
@@ -43,12 +46,27 @@ streamlit run app.py
 4. **Génération** — onglets `model.sql` / `schema.yml` / `sources.yml`, **copie** du SQL
    et **export ZIP** de l'arborescence `models/staging/`.
 
+## Fonctionnalités
+
+- **Connecteur robuste** : retry exponentiel, reconnexion auto, auth mot de passe /
+  Key-Pair / SSO / Okta, `DESC TABLE`→`DESC VIEW`, multi-profil.
+- **Perf Streamlit** : cache `@st.cache_resource`/`@st.cache_data`, lazy loading,
+  spinners localisés.
+- **Génération dbt** : structure CTE `source → renamed → select`, casts `::TYPE`,
+  colonnes groupées par type, filtre delta incrémental, `cluster_by`, colonnes
+  d'audit, filtres `WHERE` composés, `keep_raw`, hooks/grants/persist_docs.
+- **Médaillon** : `staging` / `intermediate` / `marts` (préfixe, dossier, libellés).
+- **Métadonnées** : commentaires Snowflake → descriptions, détection **PII**.
+- **Thème Sofinco** (voir [docs/colors_enterprise/](docs/colors_enterprise/README.md)).
+
+Schéma complet de la config : [docs/config_reference.md](docs/config_reference.md).
+
 ## Conventions
 
 - Python 3.11+, `from __future__ import annotations`, type hints, docstrings FR.
 - Snowflake : casts via `::TYPE` (plus performant que `CAST()`).
 - YAML : `_NullDumper` (`sort_keys=False`, `allow_unicode=True`).
-- Streamlit : tout l'état via `st.session_state`.
+- Streamlit : tout l'état via `st.session_state`, aucun appel réseau hors cache.
 
 ## Commandes utiles
 

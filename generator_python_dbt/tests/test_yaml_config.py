@@ -6,11 +6,14 @@ from typing import Any
 
 from src.yaml_config import (
     NO_UNIQUE_KEY,
+    build_model_name,
     build_staging_config,
     detect_delta_column,
+    detect_pii,
     detect_unique_key,
     dump_yaml,
     infer_cast,
+    layer_folder,
     load_yaml,
 )
 
@@ -66,3 +69,43 @@ def test_cast_inference_timestamp() -> None:
 
 def test_roundtrip_yaml(mock_config: dict[str, Any]) -> None:
     assert load_yaml(dump_yaml(mock_config)) == mock_config
+
+
+def test_detect_pii_positive() -> None:
+    assert detect_pii("EMAIL_CLIENT")
+    assert detect_pii("T_CLI_NOM")
+    assert detect_pii("IBAN")
+
+
+def test_detect_pii_negative() -> None:
+    # "nombre" ne doit pas matcher le token "nom".
+    assert not detect_pii("NOMBRE_ARTICLES")
+    assert not detect_pii("MONTANT_TOTAL")
+
+
+def test_model_name_staging() -> None:
+    assert build_model_name("raw", "T_COMMANDE", prefix="T_CMD_") == "stg_raw__commande"
+
+
+def test_model_name_intermediate() -> None:
+    name = build_model_name("raw", "T_COMMANDE", prefix="T_CMD_", layer="intermediate")
+    assert name == "int_commande"
+
+
+def test_model_name_fct_and_dim() -> None:
+    assert build_model_name("raw", "T_COMMANDE", layer="marts_fct") == "fct_commande"
+    assert build_model_name("raw", "T_COMMANDE", layer="marts_dim") == "dim_commande"
+
+
+def test_layer_folder() -> None:
+    assert layer_folder("staging") == "models/staging"
+    assert layer_folder("intermediate") == "models/intermediate"
+    assert layer_folder("marts_fct") == "models/marts"
+
+
+def test_comment_propagated_to_config() -> None:
+    columns = [
+        {"name": "ID", "type": "NUMBER(38,0)", "primary_key": True, "comment": "Identifiant"},
+    ]
+    config = build_staging_config(source_name="raw", table="T", columns=columns)
+    assert config["columns"][0]["comment"] == "Identifiant"
