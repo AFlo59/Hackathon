@@ -1,0 +1,42 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Environnements virtuels ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Outils / cache ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Streamlit ---
+.streamlit/secrets.toml
+
+# --- Secrets / credentials ---
+*.env
+.env
+.dbt_generator/
+credentials.enc
+*.pem
+*.p8
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Artefacts générés ---
+*.zip
+output/
